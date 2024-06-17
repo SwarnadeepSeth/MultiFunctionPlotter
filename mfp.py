@@ -181,16 +181,16 @@ class Plotter:
 
         if self.plot_command.style == 'hist':
             print ("Plotting Histogram")
-            sns.histplot(self.data.iloc[:, self.plot_command.x_col], color=self.plot_command.linecolor, label=self.plot_command.legend)
+            sns.histplot(data=x_data, color=self.plot_command.linecolor, label=self.plot_command.legend)
         
         elif self.plot_command.style == 'kde':
-            sns.kdeplot(self.data.iloc[:, self.plot_command.x_col], color=self.plot_command.linecolor, label=self.plot_command.legend)
+            sns.kdeplot(data=x_data, color=self.plot_command.linecolor, label=self.plot_command.legend)
 
         elif self.plot_command.style == 'box':
-            sns.boxplot(data=self.data.iloc[:, self.plot_command.x_col], color=self.plot_command.linecolor, label=self.plot_command.legend)
+            sns.boxplot(data=x_data, color=self.plot_command.linecolor, label=self.plot_command.legend)
 
         elif self.plot_command.style == 'violin':
-            sns.violinplot(data=self.data.iloc[:, self.plot_command.x_col], color=self.plot_command.linecolor, label=self.plot_command.legend)
+            sns.violinplot(data=x_data, color=self.plot_command.linecolor, label=self.plot_command.legend)
 
         else:
             plt.plot(
@@ -274,16 +274,16 @@ class Plotter:
                 x_data = self.data.iloc[:, self.plot_command.x_col]
 
         if self.plot_command.style == 'hist':
-            sns.histplot(self.data.iloc[:, self.plot_command.x_col], color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
+            sns.histplot(data=x_data, color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
         
         elif self.plot_command.style == 'kde':
-            sns.kdeplot(self.data.iloc[:, self.plot_command.x_col], color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
+            sns.kdeplot(data=x_data, color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
 
         elif self.plot_command.style == 'box':
-            sns.boxplot(data=self.data.iloc[:, self.plot_command.x_col], color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
+            sns.boxplot(data=x_data, color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
 
         elif self.plot_command.style == 'violin':
-            sns.violinplot(data=self.data.iloc[:, self.plot_command.x_col], color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
+            sns.violinplot(data=x_data, color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
 
         else:
             axd[index].plot(
