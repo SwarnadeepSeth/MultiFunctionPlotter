@@ -223,7 +223,8 @@ class Plotter:
 
     def function_plot(self):
 
-        x = np.linspace(self.plot_command.xrange[0], self.plot_command.xrange[1], 50)
+        num_points = (self.plot_command.xrange[1] - self.plot_command.xrange[0])*10
+        x = np.linspace(self.plot_command.xrange[0], self.plot_command.xrange[1], num_points)
 
         try:
             function_str = self.plot_command.function.split(') =', 1)[1]
@@ -307,18 +308,26 @@ class Plotter:
 
         if self.plot_command.legend:
             axd[index].legend(frameon=False, fontsize=self.plot_command.axis_font_size)
-
     
 # =================================================================================================
 def process_plots(commands):
     commands_list = []
     for command in commands:
-        try:
-            plot_command = PlotCommand(command)
-            plotter = Plotter(plot_command)
-            plotter.plot()
-        except Exception as e:
-            print(f"Error: {e}")
+        if command.startswith('func:'):
+            print ("Function Plotting")
+            try:
+                plot_command = PlotCommand(command)
+                plotter = Plotter(plot_command)
+                plotter.function_plot()
+            except Exception as e:
+                print(f"Error: {e}")
+        else:
+            try:
+                plot_command = PlotCommand(command)
+                plotter = Plotter(plot_command)
+                plotter.plot()
+            except Exception as e:
+                print(f"Error: {e}")
 
         commands_list.append(plot_command)
 
@@ -347,15 +356,6 @@ def process_subplots(commands, layout):
             print ("> Plotted at Index:", index)
             plotter.subplot_mosaic(index)
             count += 1
-        except Exception as e:
-            print(f"Error: {e}")
-
-def process_func_plots(commands):
-    for command in commands:
-        try:
-            plot_command = PlotCommand(command)
-            plotter = Plotter(plot_command)
-            plotter.function_plot()
         except Exception as e:
             print(f"Error: {e}")
 
@@ -403,15 +403,10 @@ if __name__ == "__main__":
         plt.savefig(path)
         print (f"Plot saved as {path}.")
        
-    elif 'func:' in sys.argv:
-        print ("Function Plotting")
-        process_func_plots(commands)
-        
     else:
         plt.figure(figsize=figsize)
         process_plots(commands)
         plt.tight_layout()
-
 
     plt.show()
 
