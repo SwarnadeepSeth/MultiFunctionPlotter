@@ -16,7 +16,7 @@ class PlotCommand:
         self.y_col = None
         self.style = 'lines'
         self.linewidth = 2  
-        self.linecolor = 'tab:blue' 
+        self.linecolor = None
         self.title = None  
         self.xlabel = 'X-axis'
         self.ylabel = 'Y-axis'
