@@ -26,6 +26,7 @@ class PlotCommand:
         self.legend = None
         self.xrange = None
         self.yrange = None
+        self.bin = 'auto'
 
         self.function = None
         self.func_parameters = {}  # To store function parameters
@@ -52,6 +53,7 @@ class PlotCommand:
         function_match = re.search(r"func: \"(.+?)\"", command)
         xrange_match = re.search(r"xrange (\d+):(\d+)", self.command)
         yrange_match = re.search(r"yrange (\d+):(\d+)", self.command)
+        bin_match = re.search(r"bin (\d+)", self.command)
         
         if csv_file_match:
             self.file = csv_file_match.group(1)
@@ -83,6 +85,8 @@ class PlotCommand:
             self.xrange = [int(xrange_match.group(1)), int(xrange_match.group(2))]
         if yrange_match:
             self.yrange = [int(yrange_match.group(1)), int(yrange_match.group(2))]
+        if bin_match:
+            self.bin = int(bin_match.group(1))
 
         if not function_match:
             if not self.file or self.x_col is None or self.y_col is None:
@@ -109,6 +113,7 @@ class Plot_from_Json:
         self.legend = None
         self.xrange = None
         self.yrange = None
+        self.bin=10
 
         self.parse_command()
 
@@ -130,6 +135,7 @@ class Plot_from_Json:
         self.legend = self.command['legend']
         self.xrange = self.command['xrange']
         self.yrange = self.command['yrange']
+        self.bin = self.command['bin']
 
         if not self.file or self.x_col is None or self.y_col is None:
             raise ValueError("File and columns for x and y must be specified in the command.")
@@ -181,7 +187,7 @@ class Plotter:
 
         if self.plot_command.style == 'hist':
             print ("Plotting Histogram")
-            sns.histplot(data=x_data, color=self.plot_command.linecolor, label=self.plot_command.legend)
+            sns.histplot(data=x_data, bins=self.plot_command.bin, color=self.plot_command.linecolor, label=self.plot_command.legend)
         
         elif self.plot_command.style == 'kde':
             sns.kdeplot(data=x_data, color=self.plot_command.linecolor, label=self.plot_command.legend)
@@ -274,7 +280,8 @@ class Plotter:
                 x_data = self.data.iloc[:, self.plot_command.x_col]
 
         if self.plot_command.style == 'hist':
-            sns.histplot(data=x_data, color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
+            print ("Plotting Histogram")
+            sns.histplot(data=x_data, bins=self.plot_command.bin, color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
         
         elif self.plot_command.style == 'kde':
             sns.kdeplot(data=x_data, color=self.plot_command.linecolor, ax=axd[f'{index}'], label=self.plot_command.legend)
@@ -363,6 +370,12 @@ def process_subplots(commands, layout):
         except Exception as e:
             print(f"Error: {e}")
 
+def save_plot(command):
+    if '--save' in sys.argv:
+        path = re.search(r"--save (\S+)", command).group(1)
+        plt.savefig(path)
+        print (f"Plot saved as {path}.")
+
 # ================================================================================================= 
 if __name__ == "__main__":
 
@@ -397,17 +410,13 @@ if __name__ == "__main__":
         fig, axd = plt.subplot_mosaic(layout, figsize=figsize)
         process_subplots(commands, layout)
         plt.tight_layout()
-
-    elif '--save' in sys.argv:
-        # Path to save the plot
-        path = re.search(r"--save (\S+)", command).group(1)
-        plt.savefig(path)
-        print (f"Plot saved as {path}.")
+        save_plot(command)
        
     else:
         plt.figure(figsize=figsize)
         process_plots(commands)
         plt.tight_layout()
+        save_plot(command)
 
     plt.show()
 
