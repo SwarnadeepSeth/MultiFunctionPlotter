@@ -57,10 +57,6 @@ class PlotCommand:
             self.file = csv_file_match.group(1)
         if text_file_match:
             self.file = text_file_match.group(1)
-        # if using_match:
-        #     self.x_col = int(using_match.group(1)) - 1
-        #     self.y_col = int(using_match.group(2)) - 1
-
         if using_match:
             self.x_col = int(using_match.group(1))
             self.y_col = int(using_match.group(2)) - 1
@@ -171,6 +167,8 @@ class Plotter:
             'p': 'o',
             'linespoints': '-o',
             'lp': '-o',
+            'stars': '*',
+            'd': 'd',
         }
         return style_map.get(self.plot_command.style, '-')
             
@@ -220,6 +218,12 @@ class Plotter:
 
         if self.plot_command.legend:
             plt.legend(frameon=False, fontsize=self.plot_command.axis_font_size)
+
+    def evaluate_expression(self, expr):
+        # Replace $n with self.data.iloc[:, n-1] to reference columns
+        expr = re.sub(r"\$(\d+)", lambda m: f"self.data.iloc[:, {int(m.group(1))-1}]", expr)
+        return eval(expr)
+
 
     def function_plot(self):
 
@@ -375,11 +379,8 @@ if __name__ == "__main__":
         plt.show()
         exit()
 
-    if len(sys.argv) > 1:
+    elif len(sys.argv) > 1:
         command = ' '.join(f'"{arg}"' if ' ' in arg else arg for arg in sys.argv[1:])
-
-    else:
-        command = input("Enter mfp command: ")
 
     commands = [cmd.strip() for cmd in command.split(',')]
 
@@ -397,7 +398,7 @@ if __name__ == "__main__":
         process_subplots(commands, layout)
         plt.tight_layout()
 
-    if '--save' in sys.argv:
+    elif '--save' in sys.argv:
         # Path to save the plot
         path = re.search(r"--save (\S+)", command).group(1)
         plt.savefig(path)
