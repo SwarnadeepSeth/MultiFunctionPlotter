@@ -5,15 +5,16 @@ from scipy.signal import find_peaks
 from prophet import Prophet
 from statsmodels.tsa.seasonal import seasonal_decompose
 import matplotlib.pyplot as plt
-import sys
+import sys, re, warnings
+
+warnings.filterwarnings("ignore")
 
 # =============================================================================
 print ("Prophet Prediction")
 print ("="*70)
 print ("Prophet is a procedure for forecasting time series data based on an additive model where non-linear trends are fit with yearly, weekly, and daily seasonality, plus holiday effects. It works best with time series that have strong seasonal effects and several seasons of historical data. Prophet is robust to missing data and shifts in the trend, and typically handles outliers well.")
 print ("="*70)
-print ("Parameters to include: 'datafile.csv', 'u 0:4', 'split_percentage=0.8', 'show_fft=False', 'show_decompose=False', 'daily_seasonality=True, 'frequency'=D")
-print ("Example: python prophet_pred.py ^NSEI.csv u 0:4 0.8 False False True D. Hit Enter for default values.")
+print ("Parameters to include: 'datafile.csv u 0:4', 'split_percentage=0.8', 'show_fft=False', 'show_decompose=False', 'daily_seasonality=True, 'frequency'=D")
 print ("="*70)
 
 # =============================================================================
@@ -22,20 +23,71 @@ data_stx = input("Data Syntax: ")
 
 # Parse the data syntax into datafile, col1, col2
 datafile = data_stx.split(" ")[0]
-col1 = int(data_stx.split(" ")[2].split(":")[0])
-col2 = int(data_stx.split(" ")[2].split(":")[1])
+col1 = int(data_stx.split(" ")[2].split(":")[0])-1
+col2 = int(data_stx.split(" ")[2].split(":")[1])-1
 
-split_percentage = float(input("Split Percentage: ")) if input("Split Percentage: ") else 0.8
+try:
+    split_percentage = float(input("Split Percentage: "))
+except ValueError:
+    split_percentage = 0.8
+    
 show_fft = True if input("Show FFT: ") == "True" else False
 show_decompose = True if input("Show Decompose: ") == "True" else False
 daily_seasonality = True if input("Daily Seasonality: ") == "True" else False
-frequency = input("Frequency: ") if input("Frequency: ") else "D"
+frequency = input("Frequency: ") or "D"
 
 print ("Given Parameters: ", datafile, split_percentage, show_fft, show_decompose, daily_seasonality, frequency)
 
 # =============================================================================
-# Load the data
-df_data = pd.read_csv(datafile)
+# Function to check if the first column contains dates
+def is_first_column_date(df):
+    first_row_first_col = df.iloc[1, 0]
+
+    # Regex to check if the first row of the first column is a date
+    date_regex = re.compile(r'\d{4}-\d{2}-\d{2}')
+    # Regex to check if the first row of the first column is a datetime
+    datetime_regex = re.compile(r'\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}')
+
+    is_date = bool(date_regex.match(str(first_row_first_col)))
+    is_datetime = bool(datetime_regex.match(str(first_row_first_col)))
+
+    if is_date or is_datetime:
+        print ("> Date column detected.")
+        return True
+    else:
+        print ("> Date column not detected.")
+        return False
+        
+    
+# If datafile extension is csv
+if datafile.endswith('.csv'):
+    df_data = pd.read_csv(datafile)
+
+elif datafile.endswith('.dat') or datafile.endswith('.txt'):
+    df_data = pd.read_csv(datafile, sep="\s+", header=None)
+
+else:
+    print (">> Invalid datafile extension. Please provide a csv, dat or txt file.")
+    sys.exit()
+
+print ("> Datafile loaded successfully")
+
+# Check if the first column contains dates
+if not is_first_column_date(df_data):
+    # Define the starting date
+    start_date = pd.to_datetime('1970-01-01')
+
+    # Create a new date column
+    df_data['Date'] = start_date + pd.to_timedelta(df_data.index, unit='D')
+
+    # Remove the original index column
+    df_data = df_data.drop(df_data.columns[0], axis=1)
+
+    # Reorder the columns
+    df_data = df_data[['Date'] + [col for col in df_data.columns if col != 'Date']]
+
+# =============================================================================
+#Select the columns to be used for the analysis
 df_data = df_data.iloc[:, [col1, col2]]
 
 # Rename second column to y_data and first column to Date
@@ -93,7 +145,7 @@ if show_decompose:
     try:
         decompose = seasonal_decompose(df_data_train.y_data)
     except:
-        print ("Decompose failed. Interpolating missing values")
+        print ("Decompose failed due to missing values. Interpolating missing values")
         df_data_train.loc[df_data_train['y_data'].isnull(), 'y_data'] = df_data_train['y_data'].interpolate()
 
     decompose = seasonal_decompose(df_data_train.y_data, model='additive', extrapolate_trend='freq', period=seasonality_period)
@@ -131,7 +183,10 @@ period_in_future = len(df_data_test)
 df_future = model_prophet.make_future_dataframe(periods=period_in_future, freq=frequency)
 
 forecast_prophet = model_prophet.predict(df_future)
+print ("Forecasted values:")
+print ('='*70)
 print(forecast_prophet[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].round().tail())
+print ('='*70)
 
 # =============================================================================
 # Plot the time series 
@@ -154,6 +209,6 @@ plt.show()
 # =============================================================================
 # Save the forecasted values
 save_forecast = input("Save Forecasted Values (True/False):")
-if save_forecast == "True":
+if save_forecast == "True" or save_forecast == "true" or save_forecast == "T" or save_forecast == "t":
     forecast_prophet.to_csv("forecast_prophet.csv", index=False)
     print ("Forecasted values saved as forecast_prophet.csv")
