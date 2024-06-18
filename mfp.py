@@ -4,9 +4,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-import sys, math
-import re
-import json
+import sys, re, os, json
 
 class PlotCommand:
     def __init__(self, command):
@@ -390,6 +388,10 @@ if __name__ == "__main__":
         process_plots_json(data)
         plt.tight_layout()
         plt.show()
+        exit()
+
+    elif sys.argv[1] == 'forcast':
+        os.system('python3 phrophet_pred.py')
         exit()
 
     elif len(sys.argv) > 1:
