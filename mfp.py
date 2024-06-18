@@ -391,7 +391,7 @@ if __name__ == "__main__":
         exit()
 
     elif sys.argv[1] == 'forcast':
-        os.system('python3 phrophet_pred.py')
+        os.system('python3 prophet_pred.py')
         exit()
 
     elif len(sys.argv) > 1:
