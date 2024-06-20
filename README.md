@@ -18,8 +18,6 @@ Install the required packages using: pip install -r requirements.txt
 
 ## Usages:
 
-# Command Line Interface
-. Plot from CSV or Text File
-mfp data.csv u 1:2 w lp title 'Sample Plot'
-
-. Plot a Mathematical Function
+### Command Line Interface
+** Plot from CSV or Text File: mfp data.csv u 1:2 w lp title 'Sample Plot' xlabel 'x-Axis' xrange 0:10
+** Plot a Mathematical Function
