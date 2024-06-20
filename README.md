@@ -12,14 +12,4 @@ MultiFunctionPlotter (MFP) is a versatile Python-based tool for creating a varie
 - **JSON Configuration**: Save and load plot configurations from JSON files.
 
 ## Requirements
-
-- Python 3.x
-- pandas
-- numpy
-- matplotlib
-- seaborn
-
-Install the required packages using:
-
-```sh
-pip install pandas numpy matplotlib seaborn
+Install the required packages using: pip install -r requirements.txt
