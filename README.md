@@ -12,6 +12,7 @@ MultiFunctionPlotter (MFP) is a versatile Python-based tool for creating a varie
 - **Subplot Layouts**: Organize multiple plots in a grid layout.
 - **Configuration via Command Line**: Use simple commands to specify plot configurations.
 - **JSON Configuration**: Save and load plot configurations from JSON files.
+- **Flexible Syntax**: Fluid syntax layout.
 
 ## Requirements
 Install the required packages using: pip install -r requirements.txt
@@ -19,5 +20,10 @@ Install the required packages using: pip install -r requirements.txt
 ## Usages:
 
 ### Command Line Interface
-- **Plot from CSV or Text File: mfp data.csv u 1:2 w lp title 'Sample Plot' xlabel 'x-Axis' xrange 0:10 <br>
-- **Plot a Mathematical Function
+
+- **Plot from CSV or Text File**: <br>
+-- mfp data.csv u 0:4 w l lc red lw 2 title 'Sample Plot' xlabel 'Days ' ylabel 'Close ' xrange 100:1000 --save example1.png <br>
+-- Please add an extra space after the axis labels and title if you are using a single word to render the title/axis labels properly. <br><br>
+- **Plot a Mathematical Function**: <br>
+-- mfp func: 'f(x;a=2;b=3.1) = a*x**2*np.exp(-b*x)' w l xrange 1:3 lc red legend 'function_plot' --save example2.png <br>
+-- Use numpy to evaluate the function. <br>
