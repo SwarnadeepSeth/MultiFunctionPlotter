@@ -1,4 +1,4 @@
-g# MultiFunctionPlotter (MFP)
+# MultiFunctionPlotter (MFP)
 
 MultiFunctionPlotter (MFP) is a versatile Python-based tool for creating a variety of plots from CSV and text files. It supports line plots, histograms, KDE plots, box plots, violin plots, and custom mathematical function plots. MFP keeps the simplicity and style of gnuplot-like commands while leveraging Python packages to produce professional-quality graphs.
 
