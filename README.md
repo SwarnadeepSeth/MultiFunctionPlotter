@@ -78,14 +78,14 @@ Arguments: <br>
 <br>
 
 - **Subplots**: <br>
-- mfp data.csv u 1:3 w l lc magenta lw 2 legend 'plot1', data.csv u 1:4 w l lc green, data.csv u 4:0 w violin, data.csv u 4:0 w kde lc maroon lw 3, data.csv u 2:3 w stars xlabel 'col2 ' ylabel 'col3 ' --subplot AAB-CDD -save example7.png <br>
+-- mfp data.csv u 1:3 w l lc magenta lw 2 legend 'plot1', data.csv u 1:4 w l lc green, data.csv u 4:0 w violin, data.csv u 4:0 w kde lc maroon lw 3, data.csv u 2:3 w stars xlabel 'col2 ' ylabel 'col3 ' --subplot AAB-CDD -save example7.png <br>
 Arguments: <br>
 -- subplot specification --> --subplot mosaic_style
 
 <br>
 
 - **Plot from json file**: <br>
-- mfp plot.json <br>
+-- mfp plot.json <br>
 Arguments: <br>
 -- MFP always saves the arguments as 'plot.json' file for future use.
 -- use plot.json to re-plot the same figure in future. 
