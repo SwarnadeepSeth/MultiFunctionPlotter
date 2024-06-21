@@ -103,5 +103,5 @@ Arguments: <br>
 -- Daily Seasonality: True/False <br>
 -- Frequency (Daily/Monthly): D/M <br>
 
-- **Contributions**: <br>
--- Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please feel free to open an issue or submit a pull request.
+## Contributions
+-- Contributions are always welcome! If you have any suggestions, bug reports, or feature requests, please feel free to open an issue or submit a pull request.
