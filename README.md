@@ -98,7 +98,10 @@ Arguments: <br>
 Arguments: <br>
 -- Data Syntax: data.csv u 1:2 <br>
 -- Split Percentage: 0.8 <br>
--- Show FFT: True <br>
--- Show Decompose: True <br>
--- Daily Seasonality: True <br>
--- Frequency: D <br>
+-- Show FFT: True/False <br>
+-- Show Decompose: True/False <br>
+-- Daily Seasonality: True/False <br>
+-- Frequency (Daily/Monthly): D/M <br>
+
+- **Contributions**: <br>
+-- Contributions are welcome! If you have any suggestions, bug reports, or feature requests, please feel free to open an issue or submit a pull request.
