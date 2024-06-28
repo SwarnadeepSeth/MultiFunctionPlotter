@@ -81,9 +81,7 @@ class PlotCommand:
             self.file = text_file_match.group(1)
         if using_match:
             self.x_col = int(using_match.group(1))
-            self.y_col = int(using_match.group(2)) - 1
-            if self.x_col > 0:
-                self.x_col -= 1
+            self.y_col = int(using_match.group(2))
         if style_match:
             self.style = style_match.group(1)
         if title_match:
@@ -189,6 +187,8 @@ class Plotter:
         style_map = {
             'lines': '-',
             'l': '-',
+            'dashed': '--',
+            'dotted': ':',
             'points': 'o',
             'p': 'o',
             'linespoints': '-o',
@@ -200,10 +200,11 @@ class Plotter:
             
     def plot(self):
         if self.plot_command.file:
+            print (self.plot_command.x_col, self.plot_command.y_col)
             if self.plot_command.x_col == 0:
                 x_data = self.data.index
             else:
-                x_data = self.data.iloc[:, self.plot_command.x_col]
+                x_data = self.data[self.plot_command.x_col]
 
         if self.plot_command.style == 'hist':
             print ("Plotting Histogram")
