@@ -200,11 +200,20 @@ class Plotter:
             
     def plot(self):
         if self.plot_command.file:
-            print (self.plot_command.x_col, self.plot_command.y_col)
-            if self.plot_command.x_col == 0:
-                x_data = self.data.index
+            print(f"Selected columns: [{self.plot_command.x_col}, {self.plot_command.y_col}]")
+            if self.plot_command.file.endswith('.csv'):
+                if self.plot_command.x_col == 0:
+                    x_data = self.data.index  
+                else:
+                    x_data = self.data.iloc[:, self.plot_command.x_col] 
+                y_data = self.data.iloc[:, self.plot_command.y_col]
             else:
-                x_data = self.data[self.plot_command.x_col]
+                # This part processes .dat files and uses iloc to correctly fetch columns
+                if self.plot_command.x_col == 0:
+                    x_data = self.data.index
+                else:
+                    x_data = self.data.iloc[:, self.plot_command.x_col - 1]  # Adjust for 1-based to 0-based index
+                y_data = self.data.iloc[:, self.plot_command.y_col - 1]  # Adjust for y_col similarly
 
         if self.plot_command.style == 'hist':
             print ("Plotting Histogram")
@@ -222,7 +231,7 @@ class Plotter:
         else:
             plt.plot(
                 x_data,
-                self.data.iloc[:, self.plot_command.y_col],
+                y_data,
                 self.map_style(),
                 linewidth=self.plot_command.linewidth,
                 color=self.plot_command.linecolor,
