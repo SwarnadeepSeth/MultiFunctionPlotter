@@ -6,7 +6,7 @@ warnings.filterwarnings("ignore")
 
 print("Data Manipulator")
 print("=" * 70)
-print("Program to slice, sort, merge, generate, append, delete, and modify data in a CSV file.")
+print("Program to slice, sort, merge, generate, append, delete, and show properties/props, data in a CSV file.")
 print("=" * 70)
 
 class MFPDataManipulator:
@@ -69,6 +69,23 @@ class MFPDataManipulator:
         df2 = df2.replace(np.nan, '', regex=True)
         self.df = pd.concat([self.df, df2])  # Update self.df
         return self.df
+    
+    def properties(self):
+        # Display the columns in a nice table with index
+        column_table = pd.DataFrame({
+            'Index': range(len(self.df.columns)),
+            'Column Name': self.df.columns
+        })
+        print("Column Index Table:")
+        print(column_table)
+
+        # Show NaN counts for each column
+        nan_counts = self.df.isnull().sum()
+        print("\nNaN Counts:")  
+        print(nan_counts)
+
+        # Return the summary statistics
+        return self.df.describe()
 
     def delete(self, targets):
         # Check if the input targets are columns (strings) or rows (integers)
@@ -107,7 +124,7 @@ if __name__ == "__main__":
             print("No datafile loaded. You can generate data from scratch.")
         
         while True:
-            action = input("Enter an action (slice, sort, merge, generate/gen, append, delete/del, modify, save, or exit/q): ").lower()
+            action = input("Enter an action (properties/props, slice, sort, merge, generate/gen, append, delete/del, modify, save, or exit/q): ").lower()
             
             if action == "generate" or action == "gen":
                 xr = input("Enter the range for x (e.g., 0:10): ")
@@ -138,6 +155,9 @@ if __name__ == "__main__":
                 order = input("Enter the order (asc/desc): ")
                 col = input("Enter the column name to sort by: ")
                 print(data_manipulator.sort(col, order))
+
+            elif action == "properties" or action == "props":
+                print(data_manipulator.properties())
             
             elif action == "append":
                 file_to_append = input("Enter the file name to append: ")
