@@ -6,7 +6,7 @@ warnings.filterwarnings("ignore")
 
 print("Data Manipulator")
 print("=" * 70)
-print("Program to slice, sort, generate, append, delete, and modify data in a CSV file.")
+print("Program to slice, sort, merge, generate, append, delete, and modify data in a CSV file.")
 print("=" * 70)
 
 class MFPDataManipulator:
@@ -19,6 +19,27 @@ class MFPDataManipulator:
         else:
             self.datafile = None
             self.df = pd.DataFrame()  # Initialize an empty DataFrame
+
+    def merge(self, other_file, on_column, how="inner"):
+        """
+        Merge the current DataFrame with another CSV file.
+        Args:
+            other_file (str): The file to merge with.
+            on_column (str): The column name to compare and merge on.
+            how (str): Merge strategy - 'inner', 'outer', 'left', or 'right'. Defaults to 'inner'.
+        Returns:
+            pd.DataFrame: The merged DataFrame.
+        """
+        try:
+            df_to_merge = pd.read_csv(other_file).replace(np.nan, '', regex=True)
+            self.df = pd.merge(self.df, df_to_merge, on=on_column, how=how)
+            return self.df
+        except FileNotFoundError:
+            print(f"File '{other_file}' not found.")
+            return self.df
+        except KeyError:
+            print(f"Column '{on_column}' not found in one of the files.")
+            return self.df
 
     def slice(self, start, end):
         start = int(start)
@@ -72,10 +93,6 @@ class MFPDataManipulator:
         print(f"Data saved to {save_path}")
 
 if __name__ == "__main__":
-    datafile = input("Enter the CSV file name: ")
-    print ("Datafile loaded successfully.")
-    data_manipulator = MFPDataManipulator(datafile)
-
     while True:
         datafile = input("Enter the CSV file name (or press Enter to skip): ")
         if datafile.strip():
@@ -90,12 +107,21 @@ if __name__ == "__main__":
             print("No datafile loaded. You can generate data from scratch.")
         
         while True:
-            action = input("Enter an action (slice, sort, generate/gen, append, delete/del, modify, save, or exit/q): ").lower()
+            action = input("Enter an action (slice, sort, merge, generate/gen, append, delete/del, modify, save, or exit/q): ").lower()
             
             if action == "generate" or action == "gen":
                 xr = input("Enter the range for x (e.g., 0:10): ")
                 expr = input("Enter the expression for y (e.g., 5*x**2/np.exp(x)): ")
                 print(data_manipulator.generate(xr, expr))
+
+            elif action == "merge":
+                if data_manipulator.df.empty:
+                    print("No data available to merge.")
+                    continue
+                other_file = input("Enter the file name to merge with: ")
+                on_column = input("Enter the column name to merge on: ")
+                how = input("Enter the merge type (inner, outer, left, right): ").lower()
+                print(data_manipulator.merge(other_file, on_column, how))
             
             elif action == "slice":
                 if data_manipulator.df.empty:
