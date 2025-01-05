@@ -24,6 +24,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sys, re, os, json
 from pathlib import Path
+# Load custom style
+plt.style.use('custom_style')
 
 # Get the directory where this script is located
 script_dir = Path(__file__).resolve().parent
@@ -426,6 +428,12 @@ if __name__ == "__main__":
         # Construct the absolute path to prophet_pred.py
         prophet_script = script_dir / 'prophet_pred.py'
         os.system(f'python3 {prophet_script}')
+        exit()
+
+    elif len(sys.argv) > 1 and sys.argv[1] == 'DM':
+        # Construct the absolute path to mfp_data_manipulator
+        data_manipulator_script = script_dir / 'mfp_data_manipulator.py'
+        os.system(f'python3 {data_manipulator_script}')
         exit()
 
     elif len(sys.argv) > 1:
