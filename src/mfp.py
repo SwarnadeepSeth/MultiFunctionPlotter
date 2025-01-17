@@ -24,8 +24,33 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import sys, re, os, json
 from pathlib import Path
-# Load custom style
-plt.style.use('custom_style')
+
+try:
+    # Load custom style
+    plt.style.use('custom_style')
+except:
+    # Update default settings
+    plt.rcParams['figure.figsize'] = (8, 6)
+    plt.rcParams['axes.titlesize'] = 24
+    plt.rcParams['axes.labelsize'] = 24
+    plt.rcParams['axes.linewidth'] = 1.5
+    plt.rcParams['axes.labelpad'] = 10
+    plt.rcParams['axes.titlepad'] = 15
+    plt.rcParams['axes.spines.top'] = False
+    plt.rcParams['axes.spines.right'] = False
+    plt.rcParams['lines.linewidth'] = 2
+    plt.rcParams['xtick.labelsize'] = 20
+    plt.rcParams['xtick.direction'] = 'out'
+    plt.rcParams['xtick.major.size'] = 6
+    plt.rcParams['xtick.major.width'] = 1.5
+    plt.rcParams['ytick.labelsize'] = 20
+    plt.rcParams['ytick.direction'] = 'out'
+    plt.rcParams['ytick.major.size'] = 6
+    plt.rcParams['ytick.major.width'] = 1.5
+    plt.rcParams['legend.fontsize'] = 24
+    plt.rcParams['legend.frameon'] = False
+    plt.rcParams['savefig.dpi'] = 300
+    plt.rcParams['savefig.bbox'] = 'tight'
 
 # Get the directory where this script is located
 script_dir = Path(__file__).resolve().parent
@@ -413,7 +438,13 @@ if __name__ == "__main__":
 
     figsize = (12, 6)
 
-    if sys.argv[1] == 'plot.json':
+    # Check if the user has provided any command-line arguments
+    if len(sys.argv) < 2:
+        print ("Usage: mfp.py [plot command] [--save path] [--subplot layout] [forecast] [DM]")
+        exit()
+
+    # Check if user wants to plot from a json file: so see if extension is .json
+    if sys.argv[1].endswith('.json'):
         print ("Reading from plot.json file...")
         with open('plot.json') as f:
             data = json.load(f)
