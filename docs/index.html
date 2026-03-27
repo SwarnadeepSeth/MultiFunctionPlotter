@@ -150,7 +150,7 @@
                 <h3>Multiple Series (Overlay)</h3>
                 <div class="code-block">
                     <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                    <code>mfp "data.csv using 1:2 with lines, data.csv using 1:3 with dashed"</code>
+                    <code>mfp data.csv using 1:2 with lines, data.csv using 1:3 with dashed</code>
                 </div>
 
                 <h3>Get Help</h3>
@@ -604,13 +604,13 @@
             <h3>2×2 Grid Layout</h3>
             <div class="code-block">
                 <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                <code>mfp --subplot AB-CD "data1.csv using 1:2 with lines, data2.csv using 1:2 with hist, data3.csv using 1:2 with kde, data4.csv using 1:2 with scatter cmap 3"</code>
+                <code>mfp --subplot AB-CD data1.csv using 1:2 with lines, data2.csv using 1:2 with hist, data3.csv using 1:2 with kde, data4.csv using 1:2 with scatter cmap 3</code>
             </div>
 
             <h3 style="margin-top: 20px;">Asymmetric Layout</h3>
             <div class="code-block">
                 <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                <code>mfp --subplot AA-BC "top_spans_two, bottom_left, bottom_right"</code>
+                <code>mfp --subplot AA-BC top_spans_two, bottom_left, bottom_right</code>
             </div>
 
             <div class="alert alert-info" style="margin-top: 20px;">
@@ -664,7 +664,7 @@
                 <h4><i class="fas fa-layer-group"></i> Multiple Series (Overlay)</h4>
                 <div class="code-block">
                     <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                    <code>mfp "data.csv using 1:2 with lines lc green, data.csv using 1:3 with dashed lc red"</code>
+                    <code>mfp data.csv using 1:2 with lines lc green, data.csv using 1:3 with dashed lc red</code>
                 </div>
             </div>
 
@@ -680,7 +680,7 @@
                 <h4><i class="fas fa-water"></i> Error Shaded Band</h4>
                 <div class="code-block">
                     <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                    <code>mfp "data.csv using 1:2 with errorshade yerr 3 lc steelblue, data.csv using 1:2 with lines lc steelblue"</code>
+                    <code>mfp data.csv using 1:2 with errorshade yerr 3 lc steelblue, data.csv using 1:2 with lines lc steelblue</code>
                 </div>
             </div>
 
@@ -736,7 +736,7 @@
                 <h4><i class="fas fa-border-all"></i> 2×2 Subplot Grid</h4>
                 <div class="code-block">
                     <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                    <code>mfp --subplot AB-CD "d1.csv using 1:2 with lines, d2.csv using 1:2 with hist, d3.csv using 1:2 with kde, d4.csv using 1:2 with scatter cmap 3"</code>
+                    <code>mfp --subplot AB-CD d1.csv using 1:2 with lines, d2.csv using 1:2 with hist, d3.csv using 1:2 with kde, d4.csv using 1:2 with scatter cmap 3</code>
                 </div>
             </div>
 
@@ -765,7 +765,7 @@
     <div class="container">
         <h2 class="section-title">🔧 Data Manipulator (DM)</h2>
         <p style="text-align: center; font-size: 18px; color: #666; margin-bottom: 40px;">
-            Interactive tool for slicing, filtering, cleaning, and transforming data without writing code.
+            Interactive CLI tool for exploring, cleaning, and transforming tabular data without writing code.
         </p>
 
         <div class="row">
@@ -775,34 +775,89 @@
                     <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
                     <code>mfp DM</code>
                 </div>
+                <p style="color: #666; margin-top: 10px;">Launches interactive data manipulation REPL.</p>
 
-                <h3 style="margin-top: 20px;"><i class="fas fa-list"></i> Features</h3>
-                <ul style="margin-left: 20px; line-height: 2;">
-                    <li><strong>Inspection:</strong> show, head, tail, properties, counts</li>
-                    <li><strong>Filtering:</strong> filter, slice, sort</li>
-                    <li><strong>Transformation:</strong> rename, cast, addcol, modify, delete</li>
-                    <li><strong>Cleaning:</strong> dedup, fillna, dropna</li>
-                    <li><strong>I/O:</strong> load, generate, append, merge, save</li>
-                    <li><strong>History:</strong> undo, redo</li>
-                </ul>
-            </div>
-
-            <div>
-                <h3><i class="fas fa-file-import"></i> Supported Formats</h3>
-                <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; line-height: 2.5;">
+                <h3 style="margin-top: 30px;"><i class="fas fa-file-import"></i> Supported Formats</h3>
+                <div style="background: #f5f5f5; padding: 15px; border-radius: 8px; line-height: 2;">
                     <div><strong>.csv</strong> — Comma-separated values</div>
                     <div><strong>.xlsx / .xls</strong> — Excel workbooks</div>
                     <div><strong>.json</strong> — JSON arrays</div>
                 </div>
+            </div>
 
-                <h3 style="margin-top: 30px;"><i class="fas fa-book"></i> Get Help</h3>
-                <div class="code-block">
-                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                    <code>python mfp_dmanp_help.py</code>
-                </div>
-                <p style="color: #666; margin-top: 10px; font-size: 14px;">Sections: overview, filter, transform, clean, io, history, tips</p>
+            <div>
+                <h3><i class="fas fa-list"></i> Commands Reference</h3>
+                
+                <h4 style="margin-top: 15px; color: #333;">Inspection</h4>
+                <table style="width: 100%; font-size: 14px; margin-bottom: 10px;">
+                    <tr><td><code>show</code></td><td>Print current DataFrame</td></tr>
+                    <tr><td><code>head [N]</code></td><td>First N rows (default 10)</td></tr>
+                    <tr><td><code>tail [N]</code></td><td>Last N rows (default 10)</td></tr>
+                    <tr><td><code>properties / props</code></td><td>Column dtypes, NaN counts, stats</td></tr>
+                    <tr><td><code>counts &lt;col&gt;</code></td><td>Frequency of unique values</td></tr>
+                </table>
+
+                <h4 style="margin-top: 15px; color: #333;">Filtering & Sorting</h4>
+                <table style="width: 100%; font-size: 14px; margin-bottom: 10px;">
+                    <tr><td><code>filter &lt;expr&gt;</code></td><td>Pandas query expression</td></tr>
+                    <tr><td><code>slice start:end</code></td><td>Keep rows [start, end)</td></tr>
+                    <tr><td><code>sort &lt;col&gt; asc|desc</code></td><td>Sort by column</td></tr>
+                </table>
+
+                <h4 style="margin-top: 15px; color: #333;">Transformation</h4>
+                <table style="width: 100%; font-size: 14px; margin-bottom: 10px;">
+                    <tr><td><code>rename old:new,...</code></td><td>Rename columns</td></tr>
+                    <tr><td><code>cast &lt;col&gt; type</code></td><td>Change dtype (int/float/str)</td></tr>
+                    <tr><td><code>addcol &lt;name&gt; expr</code></td><td>Add column from expression</td></tr>
+                    <tr><td><code>modify &lt;col&gt; old new</code></td><td>Replace values</td></tr>
+                    <tr><td><code>delete &lt;col&gt;</code></td><td>Drop column or row</td></tr>
+                </table>
+
+                <h4 style="margin-top: 15px; color: #333;">Data Cleaning</h4>
+                <table style="width: 100%; font-size: 14px; margin-bottom: 10px;">
+                    <tr><td><code>dedup [col1,col2]</code></td><td>Remove duplicate rows</td></tr>
+                    <tr><td><code>fillna &lt;col&gt; value</code></td><td>Fill NaN cells</td></tr>
+                    <tr><td><code>dropna &lt;col&gt;</code></td><td>Drop rows with NaN</td></tr>
+                </table>
+
+                <h4 style="margin-top: 15px; color: #333;">I/O</h4>
+                <table style="width: 100%; font-size: 14px;">
+                    <tr><td><code>load &lt;file&gt;</code></td><td>Load new file</td></tr>
+                    <tr><td><code>save &lt;file&gt;</code></td><td>Save to file</td></tr>
+                    <tr><td><code>append &lt;file&gt;</code></td><td>Append rows from file</td></tr>
+                    <tr><td><code>merge &lt;file&gt; col</code></td><td>Merge on column</td></tr>
+                    <tr><td><code>generate expr</code></td><td>Generate data from expression</td></tr>
+                </table>
+
+                <h4 style="margin-top: 15px; color: #333;">History</h4>
+                <table style="width: 100%; font-size: 14px;">
+                    <tr><td><code>undo</code></td><td>Revert last operation</td></tr>
+                    <tr><td><code>redo</code></td><td>Re-apply undone operation</td></tr>
+                </table>
             </div>
         </div>
+
+        <h3 style="margin-top: 40px;"><i class="fas fa-code"></i> Example Workflow</h3>
+        <div style="background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; font-family: monospace; font-size: 14px; line-height: 1.8;">
+            <div><span style="color: #569cd6;">Action&gt;</span> load data.csv</div>
+            <div><span style="color: #569cd6;">Action&gt;</span> head</div>
+            <div><span style="color: #569cd6;">Action&gt;</span> properties</div>
+            <div><span style="color: #569cd6;">Action&gt;</span> filter price &gt; 100</div>
+            <div><span style="color: #569cd6;">Action&gt;</span> sort volume desc</div>
+            <div><span style="color: #569cd6;">Action&gt;</span> rename old_name:new_name</div>
+            <div><span style="color: #569cd6;">Action&gt;</span> addcol profit revenue - cost</div>
+            <div><span style="color: #569cd6;">Action&gt;</span> dedup</div>
+            <div><span style="color: #569cd6;">Action&gt;</span> save cleaned_data.csv</div>
+        </div>
+
+        <h3 style="margin-top: 40px;"><i class="fas fa-lightbulb"></i> Tips</h3>
+        <ul style="line-height: 2; color: #666;">
+            <li>Use <code>help</code> command to see all available actions</li>
+            <li>Use <code>undo</code> / <code>redo</code> to navigate through changes (up to 20 steps)</li>
+            <li>Filter expressions use pandas query syntax: <code>price &gt; 100</code>, <code>name == "test"</code></li>
+            <li>Add columns using <code>df.eval()</code> expressions: <code>addcol total price * quantity</code></li>
+            <li>Chain operations: filter → sort → modify → save</li>
+        </ul>
     </div>
 </section>
 
