@@ -1,107 +1,500 @@
 # MultiFunctionPlotter (MFP)
 
-MultiFunctionPlotter (MFP) is a versatile Python-based tool for creating a variety of plots from CSV and text files. It supports line plots, histograms, KDE plots, box plots, violin plots, and custom mathematical function plots. MFP keeps the simplicity and style of gnuplot-like commands while leveraging Python packages to produce professional-quality graphs.
+A versatile Python-based tool for creating publication-quality plots from CSV, TXT, or DAT files. MFP combines the simplicity of gnuplot-style commands with the power of Python's matplotlib and seaborn libraries.
 
-## Version: 1.0.0
+## Version: 1.2.0
+
+---
+
+## Table of Contents
+
+1. [Features](#features)
+2. [Installation](#installation)
+3. [Quick Start](#quick-start)
+4. [Basic Usage](#basic-usage)
+5. [Plot Styles](#plot-styles)
+   - [Line & Marker Styles](#line--marker-styles)
+   - [Error Bars](#error-bars)
+   - [Scatter with Colormap](#scatter-with-colormap)
+   - [Distribution Plots](#distribution-plots)
+   - [2D Plots](#2d-plots)
+6. [Advanced Axis Formatting](#advanced-axis-formatting)
+7. [Mathematical Functions](#mathematical-functions)
+8. [Subplots](#subplots)
+9. [Log Scale](#log-scale)
+10. [Saving Figures](#saving-figures)
+11. [JSON Configuration](#json-configuration)
+12. [Time Series Forecasting](#time-series-forecasting)
+13. [Data Manipulator](#data-manipulator)
+14. [Examples](#examples)
+15. [Help System](#help-system)
+
+---
 
 ## Features
 
-- **Support for CSV and Text Files**: Load data from CSV, TXT, or DAT files.
-- **Multiple Plot Styles**: Create line plots, histograms, KDE plots, box plots, and violin plots.
-- **Custom Function Plots**: Plot mathematical functions directly.
-- **Subplot Layouts**: Organize multiple plots in a grid layout.
-- **Configuration via Command Line**: Use simple commands to specify plot configurations.
-- **JSON Configuration**: Save and load plot configurations from JSON files.
-- **Flexible Syntax**: Fluid syntax layout.
+- **Multiple File Formats**: Load data from CSV, TXT, or DAT files
+- **Rich Plot Styles**: Line plots, points, dashed lines, error bars, scatter, histograms, KDE, box plots, violin plots
+- **2D Visualizations**: Heatmaps, contour plots, filled contours
+- **Colormap Scatter**: Color points by a third variable
+- **Custom Functions**: Plot mathematical expressions directly
+- **Advanced Axis Formatting**: Scientific notation, custom ticks, rotations, date formatting
+- **Subplot Layouts**: Organize multiple plots in grid layouts
+- **Log Scale**: Logarithmic axes for spectrum analysis
+- **JSON Config**: Save and replay plot configurations
+- **CLI & API**: Use from command line or Python code
 
-## Requirements
-Install the required packages using: pip install -r requirements.txt
+---
 
-## Usages:
+## Installation
 
-### Command Line Options and Arguments:
+### Requirements
 
-- **Plot from CSV or Text File**: <br>
--- mfp data.csv u 0:4 w l lc red lw 2 title 'Sample Plot' xlabel 'Days ' ylabel 'Close ' xrange 100:1000 --save example1.png <br>
-Arguments: <br>
--- plot styles --> line plot: line or l, points: points or p, line and points: lp <br>
--- columns to plot --> using col1:col2 or u col1:col2 <br>
--- line color --> lc color_name <br>
--- line width --> lw line_width <br>
--- set x axis range --> xrange lower_x_limit:higher_x_limit <br>
--- set y axis range --> yrange lower_y_limit:higher_y_limit <br>
--- set title --> title 'Sample Plot' <br>
--- set x axis label --> xlabel 'X_Axis ' <br>
--- set y axis label --> ylabel 'Y_Axis ' <br>
--- saving the plot --> --save filename <br>
--- Please add an extra space after the axis labels and title if you are using a single word to ensure the title/axis labels render properly. <br> 
+Install the required packages:
 
-<br>
+```bash
+pip install -r requirements.txt
+```
 
-- **Plot a Mathematical Function**: <br>
--- mfp func: 'f(x;a=2;b=3.1) = a*x**2*np.exp(-b*x)' w l xrange 1:3 lc red legend 'function_plot' --save example2.png <br>
-Arguments: <br>
--- calling the function plotter --> use func: to plot a function. <br>
--- specifying the constants in the function --> use ; to separate the variable (x) and the constants. <br>
--- specifying the x axis range --> always needs the xrange values. <br>
--- describing the mathematical functions --> add np. before expression to evaluate the function properly. <br>
--- use quotation to enclose the functional expression.
--- lengeds --> lengend 'function_name'
+**Required packages:**
+- matplotlib
+- numpy
+- pandas
+- seaborn
 
-<br>
+---
 
-- **Plot Histograms/KDE**: <br>
-- mfp data.csv u 4:0 w hist bin 50 --save example3.png <br>
-Arguments: <br>
--- number of bins: bin num_bins <br>
--- histogram is calculated on col1 only.
+## Quick Start
 
-<br>
+### Command Line
 
-- **Plot KDE**: <br>
--- mfp data.csv u 4:0 w kde --save example4.png <br>
--- kde is calculated on col1 only.
+```bash
+# Basic line plot
+mfp data.csv using 1:2 with lines
 
-<br>
+# With title and labels
+mfp data.csv using 1:2 with lines title "My Plot" xlabel "X" ylabel "Y"
 
-- **Plot Violin**: <br>
--- mfp data.csv u 4:0 w violin --save example5.png <br>
--- violin plot is generated for col1 only.
+# Save to file
+mfp data.csv using 1:2 with lines --save plot.png
+```
 
-<br>
+### Python API
 
-- **Multiple Plots**: <br>
--- mfp data.csv u 1:3 w l lc magenta lw 2 legend 'plot1', data.csv u 1:4 w l lc green legend 'plot2' xlabel 'Day ' ylabel 'Y_data ' --save example6.png <br>
-Arguments: <br>
--- use comma to separate each plots.
+```python
+import sys
+sys.path.insert(0, 'src')
+from mfp import PlotConfig, Plotter
 
-<br>
+# Create plot configuration
+cfg = PlotConfig(
+    file="data.csv",
+    x_col=1, y_col=2,
+    style="lines",
+    title="My Plot",
+    xlabel="X Axis",
+    ylabel="Y Axis"
+)
 
-- **Subplots**: <br>
--- mfp data.csv u 1:3 w l lc magenta lw 2 legend 'plot1', data.csv u 1:4 w l lc green, data.csv u 4:0 w violin, data.csv u 4:0 w kde lc maroon lw 3, data.csv u 2:3 w stars xlabel 'col2 ' ylabel 'col3 ' --subplot AAB-CDD -save example7.png <br>
-Arguments: <br>
--- subplot specification --> --subplot mosaic_style
+# Generate plot
+Plotter(cfg).plot()
+```
 
-<br>
+---
 
-- **Plot from json file**: <br>
--- mfp plot.json <br>
-Arguments: <br>
--- MFP always saves the arguments as 'plot.json' file for future use.
--- use plot.json to re-plot the same figure in future. 
--- subplot save is not currently supported.
+## Basic Usage
 
-<br>
+### Command Syntax
 
-- **Forecast your data using FB prophet**: <br>
--- mfp forecast <br>
-Arguments: <br>
--- Data Syntax: data.csv u 1:2 <br>
--- Split Percentage: 0.8 <br>
--- Show FFT: True/False <br>
--- Show Decompose: True/False <br>
--- Daily Seasonality: True/False <br>
--- Frequency (Daily/Monthly): D/M <br>
+```
+mfp <file> using <x_col>:<y_col> with <style> [options]
+```
 
-## Contributions
--- Contributions are always welcome! If you have any suggestions, bug reports, or feature requests, please feel free to open an issue or submit a pull request.
+### Common Tokens
+
+| Token | Description | Example |
+|-------|-------------|---------|
+| `using` / `u` | Column indices (1-based for text, 0-based for CSV) | `using 1:2` |
+| `with` / `w` | Plot style | `with lines` |
+| `title` | Plot title | `title "My Title"` |
+| `xlabel` | X-axis label | `xlabel "Time"` |
+| `ylabel` | Y-axis label | `xlabel "Price"` |
+| `legend` / `lg` | Legend entry | `legend "Series 1"` |
+| `linewidth` / `lw` | Line width (default: 2) | `linewidth 3` |
+| `linecolor` / `lc` | Line/marker color | `linecolor tab:red` |
+| `xrange` | X-axis limits | `xrange 0:100` |
+| `yrange` | Y-axis limits | `yrange 0:1000` |
+
+### Full Example
+
+```bash
+mfp data.csv using 1:2 with lines title "Stock Prices" xlabel "Date" ylabel "Close Price" linecolor tab:blue linewidth 2 --save plot.png
+```
+
+---
+
+## Plot Styles
+
+### Line & Marker Styles
+
+| Style | Alias | Description |
+|-------|-------|-------------|
+| `lines` | `l` | Solid line |
+| `dashed` | | Dashed line |
+| `dotted` | | Dotted line |
+| `points` | `p` | Circle markers only |
+| `linespoints` | `lp` | Line + markers |
+| `stars` | `*` | Star markers |
+| `d` | | Diamond markers |
+
+**Example:**
+```bash
+mfp data.csv using 1:2 with points linecolor tab:red
+mfp data.csv using 1:2 with dashed linecolor tab:green
+```
+
+### Error Bars
+
+Two styles available:
+
+**Discrete Error Bars** (`errorbars` / `eb`):
+```bash
+mfp data.dat using 1:2 with errorbars yerr 3
+```
+
+**Shaded Error Band** (`errorshade` / `es`):
+```bash
+mfp data.dat using 1:2 with errorshade yerr 3
+```
+
+**Extra tokens:**
+- `yerr <col>` - Column with ±σ values
+- `capsize <int>` - Cap width (default: 4)
+
+**Combine with lines:**
+```bash
+mfp "data.csv using 1:2 with errorshade yerr 3 lc steelblue, data.csv using 1:2 with lines lc steelblue"
+```
+
+### Scatter with Colormap
+
+Plot x vs y colored by a third variable:
+
+```bash
+mfp data.csv using 1:2 with scatter cmap 3 colormap plasma
+```
+
+**Tokens:**
+- `cmap <col>` - Column for color values (required)
+- `colormap <name>` - Matplotlib colormap (default: viridis)
+- `cbar_label` - Colorbar label
+
+**Useful Colormaps:**
+- Perceptually uniform: `viridis`, `plasma`, `inferno`, `magma`, `cividis`
+- Diverging: `coolwarm`, `RdBu`, `seismic`
+- Sequential: `Blues`, `Reds`, `YlOrRd`
+
+### Distribution Plots
+
+| Style | Description |
+|-------|-------------|
+| `hist` | Histogram (use `bin <n>` for number of bins) |
+| `kde` | Kernel Density Estimation |
+| `box` | Box-and-whisker plot |
+| `violin` | Violin plot |
+
+**Examples:**
+```bash
+mfp data.csv using 0:1 with hist bin 30
+mfp data.csv using 0:1 with kde
+mfp data.csv using 0:1 with box
+mfp data.csv using 0:1 with violin
+```
+
+### 2D Plots
+
+For matrix/grid data (no column specification needed):
+
+| Style | Description |
+|-------|-------------|
+| `heatmap` | 2D heatmap (imshow) |
+| `contour` | Contour lines |
+| `contourf` | Filled contours |
+
+**Examples:**
+```bash
+mfp matrix.dat with heatmap colormap viridis
+mfp matrix.dat with contourf levels 20 colormap RdBu
+mfp matrix.dat with contour levels 15
+```
+
+**Tokens:**
+- `colormap <name>` - Colormap (default: viridis)
+- `levels <n>` - Number of contour levels (default: 10)
+- `cbar_label` - Colorbar label
+
+---
+
+## Advanced Axis Formatting (v1.2)
+
+Control axis appearance with precision for publication-quality plots.
+
+### Scientific Notation
+
+```bash
+mfp data.csv using 1:2 with lines sci_notation x
+mfp data.csv using 1:2 with lines sci_notation y
+mfp data.csv using 1:2 with lines sci_notation both
+```
+
+### Custom Tick Positions
+
+```bash
+mfp data.csv using 1:2 with lines xticks "0,90,180,270"
+mfp data.csv using 1:2 with lines yticks "0,1e-5,2e-5"
+```
+
+### Tick Rotation
+
+```bash
+mfp data.csv using 1:2 with lines xtick_rotation 45
+mfp data.csv using 1:2 with lines ytick_rotation 90
+```
+
+### Date Formatting
+
+```bash
+mfp data.csv using 1:2 with lines date_format "%Y-%m-%d"
+```
+
+Format codes: `%Y` (year), `%m` (month), `%d` (day), `%H` (hour), `%M` (min), `%S` (sec)
+
+### Combined Example
+
+```bash
+mfp data.csv using 1:2 with lines sci_notation both xticks "0,300,600" xtick_rotation 30
+```
+
+---
+
+## Mathematical Functions
+
+Plot mathematical expressions directly:
+
+```bash
+mfp func: "f(x) = np.sin(x)" xrange 0:10
+```
+
+**With parameters:**
+```bash
+mfp func: "f(x,a=2) = a*np.cos(x)" xrange 0:10
+```
+
+**Tokens:**
+- `func:` - Start function definition
+- `xrange` - Required x-axis range
+- Use `np.` prefix for numpy functions
+
+**Examples:**
+```bash
+mfp func: "f(x) = np.sin(x)" xrange 0:10 lc red
+mfp func: "f(x) = x**2" xrange 0:5 lc blue lw 2
+mfp func: "f(x,a=1,b=2) = a*np.exp(-b*x)" xrange 0:5
+```
+
+---
+
+## Subplots
+
+Create multi-panel figures using `--subplot`:
+
+```bash
+mfp --subplot AB "data1.csv using 1:2 with lines, data2.csv using 1:2 with hist"
+```
+
+**Layout format:**
+- Letters represent panels (A, B, C, ...)
+- Use `-` to separate rows
+- Each command separated by comma
+
+**2x2 Grid:**
+```bash
+mfp --subplot AB-CD "plot1, plot2, plot3, plot4"
+```
+
+**Asymmetric Layout:**
+```bash
+mfp --subplot AA-BC "top_full, bottom_left, bottom_right"
+```
+
+---
+
+## Log Scale
+
+Apply logarithmic scale to axes:
+
+```bash
+mfp spectrum.csv using 1:2 with lines --ylog
+mfp spectrum.csv using 1:2 with lines --xlog --ylog
+```
+
+**Tokens:**
+- `--xlog` - Logarithmic x-axis
+- `--ylog` - Logarithmic y-axis
+
+---
+
+## Saving Figures
+
+Save plots to file:
+
+```bash
+mfp data.csv using 1:2 with lines --save plot.png
+mfp data.csv using 1:2 with lines --save plot.pdf
+mfp data.csv using 1:2 with lines --save plot.svg
+```
+
+**Supported formats:**
+- `.png` - Raster (good for web)
+- `.pdf` - Vector (best for publications)
+- `.svg` - Vector (good for editing)
+- `.eps` - Vector (legacy journals)
+
+---
+
+## JSON Configuration
+
+MFP saves your last plot configuration to `plot.json`:
+
+```bash
+mfp data.csv using 1:2 with lines --save plot.png
+# plot.json is automatically saved
+mfp plot.json  # Replay last plot
+```
+
+**Manual JSON creation:**
+```json
+{
+    "file": "data.csv",
+    "x_col": 1,
+    "y_col": 2,
+    "style": "lines",
+    "title": "My Plot",
+    "linecolor": "tab:blue",
+    "linewidth": 2
+}
+```
+
+Then run:
+```bash
+mfp plot.json
+```
+
+---
+
+## Time Series Forecasting
+
+Forecast future values using Facebook Prophet:
+
+```bash
+mfp forecast
+```
+
+This launches an interactive forecasting tool.
+
+**Data format for forecasting:**
+```
+Date,Value
+2019-01-01,100
+2019-01-02,105
+...
+```
+
+---
+
+## Data Manipulator
+
+Launch the interactive data manipulation tool:
+
+```bash
+mfp DM
+```
+
+---
+
+## Examples
+
+### Stock Price Analysis
+```bash
+# Close price over time
+mfp data.csv using 0:4 with lines title "Close Price" xlabel "Date" ylabel "Price"
+
+# Multiple prices
+mfp "data.csv using 0:2 with lines lc green, data.csv using 0:4 with lines lc blue"
+```
+
+### Error Analysis
+```bash
+mfp data.dat using 1:2 with errorbars yerr 3 lc red
+mfp data.dat using 1:2 with errorshade yerr 3 lc orange
+```
+
+### Scientific Data
+```bash
+# Log scale for spectrum
+mfp spectrum.csv using 1:2 with lines --ylog
+
+# Scientific notation
+mfp data.csv using 1:2 with lines sci_notation both
+```
+
+### Publication Quality
+```bash
+mfp data.csv using 1:2 with lines title "Results" xlabel "Time (s)" ylabel "Voltage (mV)" linewidth 3 sci_notation y xtick_rotation 45 --save figure.pdf
+```
+
+---
+
+## Help System
+
+### Command Line Help
+```bash
+mfp --help
+mfp --help tokens
+mfp --help styles
+mfp --help errorbars
+mfp --help colormap
+mfp --help 2d
+mfp --help logscale
+mfp --help subplots
+mfp --help save
+mfp --help formatting
+mfp --help examples
+```
+
+### List All Styles
+```bash
+mfp --list-styles
+```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please feel free to:
+- Open an issue for bug reports or feature requests
+- Submit a pull request for improvements
+- Share your use cases and examples
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Author
+
+**Dr. Swarnadeep Seth**  
+MultiFunctionPlotter (MFP) - A versatile data visualization tool
