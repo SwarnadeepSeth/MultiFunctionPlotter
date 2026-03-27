@@ -44,9 +44,14 @@ A versatile Python-based tool for creating publication-quality plots from CSV, T
     - [Launch](#launch)
     - [Supported File Formats](#supported-file-formats)
     - [Available Actions](#available-actions)
-    - [Examples](#examples-1)
+      - [Inspection Commands](#inspection-commands)
+      - [Transformation Commands](#transformation-commands)
+      - [Data Cleaning](#data-cleaning)
+      - [I/O Commands](#io-commands)
+      - [History Commands](#history-commands)
+    - [Examples](#examples)
     - [Tips](#tips)
-  - [Examples](#examples)
+  - [Examples](#examples-1)
     - [Stock Price Analysis](#stock-price-analysis)
     - [Error Analysis](#error-analysis)
     - [Scientific Data](#scientific-data)
@@ -224,7 +229,7 @@ mfp data.dat using 1:2 with errorshade yerr 3
 
 **Combine with lines:**
 ```
-mfp "data.csv using 1:2 with errorshade yerr 3 lc steelblue, data.csv using 1:2 with lines lc steelblue"
+mfp data.csv using 1:2 with errorshade yerr 3 lc steelblue, data.csv using 1:2 with lines lc steelblue
 ```
 
 ### Scatter with Colormap
