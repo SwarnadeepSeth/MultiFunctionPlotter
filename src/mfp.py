@@ -187,7 +187,7 @@ class CommandParser:
     _RE_LW         = re.compile(r"(?:linewidth|lw) (\d+)")
     _RE_LC         = re.compile(r"(?:linecolor|lc) (\S+)")
     _RE_LEGEND     = re.compile(r"(?:legend|lg) (\S+)")
-    _RE_FUNC       = re.compile(r'func: "(.+?)"')
+    _RE_FUNC       = re.compile(r'func: ("[^"]+"|.+?)(?=\s+xrange|\s+yrange|\s+title|\s+xlabel|\s+ylabel|\s+legend|\s+lg|\s+with|\s+w|\s+linecolor|\s+lc|\s+linewidth|\s+lw|$)')
     _RE_XRANGE     = re.compile(r"xrange (\d+):(\d+)")
     _RE_YRANGE     = re.compile(r"yrange (\d+):(\d+)")
     _RE_BIN        = re.compile(r"bin (\d+)")
@@ -201,10 +201,10 @@ class CommandParser:
     _RE_LEVELS     = re.compile(r"levels (\d+)")
 
     # ── Advanced axis formatting v1.2 ──────────────────────────────────────────
-    _RE_DATE_FORMAT = re.compile(r'date_format "(.+?)"')
+    _RE_DATE_FORMAT = re.compile(r'date_format ("[^"]+"|\S+)')
     _RE_SCI_NOTATION = re.compile(r"sci_notation (\S+)")
-    _RE_XTICKS = re.compile(r'xticks "(.+?)"')
-    _RE_YTICKS = re.compile(r'yticks "(.+?)"')
+    _RE_XTICKS = re.compile(r'xticks ("[^"]+"|\S+)')
+    _RE_YTICKS = re.compile(r'yticks ("[^"]+"|\S+)')
     _RE_XTICK_ROT = re.compile(r"xtick_rotation (-?\d+)")
     _RE_YTICK_ROT = re.compile(r"ytick_rotation (-?\d+)")
 
@@ -249,7 +249,7 @@ class CommandParser:
 
         # ── Math function ─────────────────────────────────────────────────────
         if m := cls._RE_FUNC.search(command):
-            cfg.function = m.group(1)
+            cfg.function = m.group(1).strip('"')
             cfg.func_parameters = dict(cls._RE_PARAMS.findall(cfg.function))
 
         # ── Ranges / bins ─────────────────────────────────────────────────────
@@ -280,13 +280,13 @@ class CommandParser:
 
         # ── Advanced axis formatting ──────────────────────────────────────────
         if m := cls._RE_DATE_FORMAT.search(command):
-            cfg.date_format = m.group(1)
+            cfg.date_format = m.group(1).strip('"')
         if m := cls._RE_SCI_NOTATION.search(command):
             cfg.sci_notation = m.group(1)
         if m := cls._RE_XTICKS.search(command):
-            cfg.xticks = m.group(1)
+            cfg.xticks = m.group(1).strip('"')
         if m := cls._RE_YTICKS.search(command):
-            cfg.yticks = m.group(1)
+            cfg.yticks = m.group(1).strip('"')
         if m := cls._RE_XTICK_ROT.search(command):
             cfg.xtick_rotation = int(m.group(1))
         if m := cls._RE_YTICK_ROT.search(command):
@@ -539,13 +539,17 @@ class Plotter:
         """Render a standard single-panel plot."""
         log.info("Plotting columns [%s, %s]", self.cfg.x_col, self.cfg.y_col)
 
-        one_based = not (self.cfg.file or "").endswith(".csv")
-        x_data = self._get_x_data(one_based=one_based)
-        y_data = self._get_y_data(one_based=one_based)
-        err    = self._get_err_data(one_based=one_based)
-        cmap_z = self._get_cmap_data(one_based=one_based)
-
-        self._draw_series(x_data, y_data, err=err, cmap_z=cmap_z, ax=None)
+        # For 2D styles (heatmap, contour, contourf), don't need x/y data
+        if self.cfg.style in TWO_D_STYLES:
+            self._draw_series(None, None, err=None, cmap_z=None, ax=None)
+        else:
+            one_based = not (self.cfg.file or "").endswith(".csv")
+            x_data = self._get_x_data(one_based=one_based)
+            y_data = self._get_y_data(one_based=one_based)
+            err    = self._get_err_data(one_based=one_based)
+            cmap_z = self._get_cmap_data(one_based=one_based)
+            self._draw_series(x_data, y_data, err=err, cmap_z=cmap_z, ax=None)
+        
         self._apply_axis_decorations(ax=None)
 
     def function_plot(self) -> None:
@@ -850,10 +854,45 @@ def _list_styles() -> None:
 # ══════════════════════════════════════════════════════════════════════════════
 
 def _build_command_string() -> str:
-    return " ".join(
-        f'"{arg}"' if " " in arg else arg
-        for arg in sys.argv[1:]
-    )
+    return " ".join(sys.argv[1:])
+
+
+def _split_commands(command_string: str) -> list[str]:
+    """
+    Split commands by comma, respecting quoted strings.
+    Only splits on comma when followed by a known keyword/pattern (new command).
+    """
+    # Known patterns that indicate a new command after comma
+    new_command_patterns = ('data', 'func', 'matrix', 'plot', 'file')
+    
+    tokens = []
+    current = []
+    in_quotes = False
+    
+    i = 0
+    while i < len(command_string):
+        char = command_string[i]
+        
+        if char in ('"', "'"):
+            in_quotes = not in_quotes
+            current.append(char)
+        elif char == ',' and not in_quotes:
+            # Check what follows the comma
+            rest = command_string[i+1:].lstrip()
+            if rest and any(rest.startswith(p) for p in new_command_patterns):
+                # This is a new command separator
+                tokens.append(''.join(current).strip())
+                current = []
+            else:
+                # Part of a value - don't split
+                current.append(char)
+        else:
+            current.append(char)
+        
+        i += 1
+    
+    tokens.append(''.join(current).strip())
+    return [t for t in tokens if t]
 
 
 def main() -> None:  # noqa: C901
@@ -900,7 +939,9 @@ def main() -> None:  # noqa: C901
     core_command = re.sub(
         r"--(?:xlog|ylog|save \S+|subplot \S+)\s*", "", command
     ).strip()
-    commands = [cmd.strip() for cmd in core_command.split(",") if cmd.strip()]
+    
+    # Split commands by comma, respecting quoted strings
+    commands = _split_commands(core_command)
 
     axd = None
 
