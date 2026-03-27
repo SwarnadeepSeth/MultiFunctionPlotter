@@ -365,7 +365,7 @@ mfp func: "f(x,a=1,b=2) = a*np.exp(-b*x)" xrange 0:5
 Create multi-panel figures using `--subplot`:
 
 ```
-mfp --subplot AB "data1.csv using 1:2 with lines, data2.csv using 1:2 with hist"
+mfp --subplot AB data.csv using 1:2 with lines, data.csv using 1:2 with hist
 ```
 
 **Layout format:**
