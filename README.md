@@ -41,6 +41,11 @@ A versatile Python-based tool for creating publication-quality plots from CSV, T
   - [JSON Configuration](#json-configuration)
   - [Time Series Forecasting](#time-series-forecasting)
   - [Data Manipulator](#data-manipulator)
+    - [Launch](#launch)
+    - [Supported File Formats](#supported-file-formats)
+    - [Available Actions](#available-actions)
+    - [Examples](#examples-1)
+    - [Tips](#tips)
   - [Examples](#examples)
     - [Stock Price Analysis](#stock-price-analysis)
     - [Error Analysis](#error-analysis)
@@ -460,11 +465,96 @@ Date,Value
 
 ## Data Manipulator
 
-Launch the interactive data manipulation tool:
+MFP includes a powerful interactive data manipulation tool for exploring, cleaning, and transforming tabular data without writing code.
+
+### Launch
 
 ```
 mfp DM
 ```
+
+Or directly:
+```
+python src/mfp_dmanp.py data.csv
+```
+
+### Supported File Formats
+
+- CSV files (.csv)
+- Excel files (.xlsx, .xls)
+- JSON files (.json)
+
+### Available Actions
+
+#### Inspection Commands
+
+| Command | Description |
+|---------|-------------|
+| `show` | Print the current DataFrame |
+| `head [N]` | Print first N rows (default: 10) |
+| `tail [N]` | Print last N rows (default: 10) |
+| `properties` / `props` | Column dtypes, NaN counts, summary statistics |
+| `counts <col>` | Frequency count of unique values |
+
+#### Transformation Commands
+
+| Command | Description |
+|---------|-------------|
+| `filter <expr>` | Keep rows matching a pandas query expression |
+| `slice <start:end>` | Keep rows in range [start, end) |
+| `sort <col> asc/desc` | Sort by a column |
+| `rename <old:new,...>` | Rename columns |
+| `cast <col> <type>` | Change column dtype (int/float/str/datetime) |
+| `addcol <name> <expr>` | Add new column from expression |
+| `modify <col> <old> <new>` | Replace values in a column |
+| `delete <col>` | Drop columns or rows |
+
+#### Data Cleaning
+
+| Command | Description |
+|---------|-------------|
+| `dedup [col1,col2]` | Remove duplicate rows |
+| `fillna <col> <value>` | Fill NaN cells with value |
+| `dropna <col>` | Drop rows with NaN |
+
+#### I/O Commands
+
+| Command | Description |
+|---------|-------------|
+| `load <file>` | Load a new file |
+| `generate <expr>` | Generate data from expression |
+| `gen` | Alias for generate |
+| `append <file>` | Append rows from another file |
+| `merge <file> <on_col>` | Merge with another file |
+| `save <file>` | Save to file |
+
+#### History Commands
+
+| Command | Description |
+|---------|-------------|
+| `undo` | Revert last operation |
+| `redo` | Re-apply undone operation |
+
+### Examples
+
+```
+Action> load data.csv
+Action> head
+Action> properties
+Action> filter price > 100
+Action> sort volume desc
+Action> rename old_name:new_name
+Action> addcol profit revenue - cost
+Action> dedup
+Action> save cleaned_data.csv
+```
+
+### Tips
+
+- Use `help` to see all commands
+- Use `undo` / `redo` to navigate changes
+- Expressions support pandas query syntax
+- Use `addcol` with `df.eval()` expressions
 
 ---
 
