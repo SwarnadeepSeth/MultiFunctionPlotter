@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>MFP - MultiFunctionPlotter | Documentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+</head>
+<body>
+
+<!-- NAVIGATION HEADER -->
+<header class="navbar">
+    <div class="container">
+        <div class="nav-brand">
+            <a href="#" class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>MFP</span>
+            </a>
+        </div>
+        <nav class="nav-menu">
+            <ul>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#quickstart">Quick Start</a></li>
+                <li><a href="#commands">Commands</a></li>
+                <li><a href="#styles">Styles</a></li>
+                <li><a href="#examples">Examples</a></li>
+                <li><a href="#dm">Data Manipulator</a></li>
+                <li><a href="https://github.com/SwarnadeepSeth/mfp" target="_blank" class="btn-github">
+                    <i class="fab fa-github"></i> GitHub
+                </a></li>
+            </ul>
+        </nav>
+        <button class="menu-toggle" id="menuToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+</header>
+
+<!-- HERO SECTION -->
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <h1>MultiFunctionPlotter (MFP)</h1>
+            <p class="subtitle">Publication-quality plotting for data scientists, engineers, and AI agents</p>
+            <p class="description">
+                A lightweight, agent-friendly plotting DSL with 85% fewer tokens than matplotlib.
+                Create stunning visualizations from CSV, TXT, or DAT files in seconds.
+            </p>
+            <div class="hero-buttons">
+                <a href="#quickstart" class="btn btn-primary">Get Started</a>
+                <a href="https://github.com/SwarnadeepSeth/mfp" class="btn btn-secondary" target="_blank">
+                    <i class="fab fa-github"></i> View on GitHub
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section id="features" class="section">
+    <div class="container">
+        <h2 class="section-title">✨ Key Features</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-bolt"></i></div>
+                <h3>Ultra-Lightweight DSL</h3>
+                <p>Gnuplot-style syntax. 85% fewer tokens than matplotlib. Perfect for AI agents.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-file-csv"></i></div>
+                <h3>Multi-Format Support</h3>
+                <p>CSV, TXT, DAT, Excel, JSON. Automatic format detection.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-palette"></i></div>
+                <h3>30+ Plot Styles</h3>
+                <p>Lines, markers, error bars, scatter, heatmaps, contours, distributions, and more.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-sliders-h"></i></div>
+                <h3>Advanced Formatting</h3>
+                <p>Scientific notation, custom ticks, date formatting, log scales, rotations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-th"></i></div>
+                <h3>Subplot Mosaics</h3>
+                <p>Flexible multi-panel layouts with custom grid definitions.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-function"></i></div>
+                <h3>Math Functions</h3>
+                <p>Plot mathematical expressions with NumPy. Parameter control included.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-redo"></i></div>
+                <h3>Reproducibility</h3>
+                <p>Save/replay configurations as JSON. Perfect for research.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon"><i class="fas fa-code"></i></div>
+                <h3>Python API</h3>
+                <p>Use as a library. Full programmatic control over plots.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- QUICK START SECTION -->
+<section id="quickstart" class="section bg-light">
+    <div class="container">
+        <h2 class="section-title">🚀 Quick Start</h2>
+        <div class="row">
+            <div>
+                <h3>Installation</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>pip install -r requirements.txt</code>
+                </div>
+                <p style="margin-top: 10px; color: #666;">Or install as global command:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>install.sh</code>
+                </div>
+                <p style="margin-top: 10px; color: #666; font-size: 14px;">This creates a symlink at /usr/local/bin/mfp for global access.</p>
+
+                <h3>Basic Line Plot</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp data.csv using 1:2 with lines</code>
+                </div>
+
+                <h3>With Title & Labels</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp data.csv using 1:2 with lines title "Stock Prices" xlabel "Date" ylabel "Close"</code>
+                </div>
+            </div>
+
+            <div>
+                <h3>Save to File</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp data.csv using 1:2 with lines --save output.pdf</code>
+                </div>
+
+                <h3>Multiple Series (Overlay)</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp "data.csv using 1:2 with lines, data.csv using 1:3 with dashed"</code>
+                </div>
+
+                <h3>Get Help</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp --help</code>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- COMMANDS SECTION -->
+<section id="commands" class="section">
+    <div class="container">
+        <h2 class="section-title">⚙️ Command Reference</h2>
+
+        <div class="search-container">
+            <input type="text" id="commandSearch" class="search-input" placeholder="🔍 Search commands...">
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'basic-tokens')">Basic Tokens</button>
+            <button class="tab-btn" onclick="switchTab(event, 'global-flags')">Global Flags</button>
+            <button class="tab-btn" onclick="switchTab(event, 'error-bar-tokens')">Error Bars</button>
+            <button class="tab-btn" onclick="switchTab(event, 'colormap-tokens')">Colormap</button>
+            <button class="tab-btn" onclick="switchTab(event, '2d-tokens')">2D Styles</button>
+        </div>
+
+        <!-- BASIC TOKENS TAB -->
+        <div id="basic-tokens" class="tab-content active">
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Format</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="searchable">
+                        <td><code>using / u</code></td>
+                        <td>X:Y</td>
+                        <td>Column indices (1-based for text, 0-based for CSV)</td>
+                        <td><code>using 1:2</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>with / w</code></td>
+                        <td>style</td>
+                        <td>Plot style (see Styles section)</td>
+                        <td><code>with lines</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>title</code></td>
+                        <td>"text"</td>
+                        <td>Plot title</td>
+                        <td><code>title "Stock Prices"</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>xlabel</code></td>
+                        <td>"text"</td>
+                        <td>X-axis label</td>
+                        <td><code>xlabel "Date"</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>ylabel</code></td>
+                        <td>"text"</td>
+                        <td>Y-axis label</td>
+                        <td><code>ylabel "Price"</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>legend / lg</code></td>
+                        <td>label</td>
+                        <td>Legend entry (no spaces)</td>
+                        <td><code>legend "Series A"</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>linewidth / lw</code></td>
+                        <td>int</td>
+                        <td>Line width in points (default: 2)</td>
+                        <td><code>linewidth 3</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>linecolor / lc</code></td>
+                        <td>color</td>
+                        <td>Color: tab:red, #3a7ab3, steelblue, etc.</td>
+                        <td><code>linecolor tab:blue</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>xrange</code></td>
+                        <td>min:max</td>
+                        <td>Force x-axis limits</td>
+                        <td><code>xrange 0:100</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>yrange</code></td>
+                        <td>min:max</td>
+                        <td>Force y-axis limits</td>
+                        <td><code>yrange 0:1000</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>bin</code></td>
+                        <td>int</td>
+                        <td>Histogram bin count (default: auto)</td>
+                        <td><code>bin 30</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>func:</code></td>
+                        <td>"expr"</td>
+                        <td>Math expression (requires xrange)</td>
+                        <td><code>func: "f(x) = np.sin(x)"</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- GLOBAL FLAGS TAB -->
+        <div id="global-flags" class="tab-content">
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Flag</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="searchable">
+                        <td><code>--xlog</code></td>
+                        <td>Set x-axis to logarithmic scale</td>
+                        <td><code>--xlog</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>--ylog</code></td>
+                        <td>Set y-axis to logarithmic scale</td>
+                        <td><code>--ylog</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>--save</code></td>
+                        <td>Save figure to file (format from extension)</td>
+                        <td><code>--save output.pdf</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>--subplot</code></td>
+                        <td>Create subplot mosaic layout</td>
+                        <td><code>--subplot AB-CD</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>--help</code></td>
+                        <td>Display help documentation</td>
+                        <td><code>--help</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>--list-styles</code></td>
+                        <td>List all available plot styles</td>
+                        <td><code>--list-styles</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ERROR BAR TOKENS TAB -->
+        <div id="error-bar-tokens" class="tab-content">
+            <h3>Discrete Error Bars</h3>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Format</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>yerr</code></td>
+                        <td>&lt;col&gt;</td>
+                        <td>1-based column index holding ±σ values</td>
+                    </tr>
+                    <tr>
+                        <td><code>capsize</code></td>
+                        <td>int</td>
+                        <td>Cap width in points (default: 4)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp data.csv using 1:2 with errorbars yerr 3 capsize 5</code>
+            </div>
+
+            <h3 style="margin-top: 30px;">Shaded Error Band</h3>
+            <p>Same tokens as errorbars; capsize is ignored.</p>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp data.csv using 1:2 with errorshade yerr 3</code>
+            </div>
+        </div>
+
+        <!-- COLORMAP TOKENS TAB -->
+        <div id="colormap-tokens" class="tab-content">
+            <h3>Scatter with Colormap</h3>
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Token</th>
+                        <th>Format</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>cmap</code></td>
+                        <td>&lt;col&gt;</td>
+                        <td>1-based column index for colour values (required)</td>
+                    </tr>
+                    <tr>
+                        <td><code>colormap</code></td>
+                        <td>name</td>
+                        <td>Matplotlib colormap (default: viridis)</td>
+                    </tr>
+                    <tr>
+                        <td><code>cbar_label</code></td>
+                        <td>"text"</td>
+                        <td>Colorbar label (optional)</td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp results.csv using 1:2 with scatter cmap 3 colormap plasma cbar_label "Temp (K)"</code>
+            </div>
+
+            <h3 style="margin-top: 30px;">Popular Colormaps</h3>
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px;">
+                <div>
+                    <strong>Perceptually Uniform</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>viridis</li>
+                        <li>plasma</li>
+                        <li>inferno</li>
+                        <li>magma</li>
+                        <li>cividis</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Diverging</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>coolwarm</li>
+                        <li>RdBu</li>
+                        <li>seismic</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong>Sequential</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Blues</li>
+                        <li>Reds</li>
+                        <li>YlOrRd</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2D STYLES TAB -->
+        <div id="2d-tokens" class="tab-content">
+            <div class="alert alert-info">
+                <strong>📌 Important:</strong> 2-D styles read the entire file as a numeric matrix (no header).
+                <strong>Rows → y-axis, columns → x-axis.</strong> The <code>using</code>, <code>xrange</code>, and <code>yrange</code> tokens are ignored.
+            </div>
+
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Style</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>heatmap</code></td>
+                        <td>2D heatmap (imshow) — best for raster data</td>
+                        <td><code>with heatmap</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>contour</code></td>
+                        <td>Contour lines only</td>
+                        <td><code>with contour levels 15</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>contourf</code></td>
+                        <td>Filled contours</td>
+                        <td><code>with contourf levels 20</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3 style="margin-top: 30px;">2D-Specific Tokens</h3>
+            <ul style="margin-left: 20px; line-height: 2;">
+                <li><code>colormap &lt;name&gt;</code> — Colormap (default: viridis)</li>
+                <li><code>levels &lt;int&gt;</code> — Number of contour levels (default: 10)</li>
+                <li><code>cbar_label "text"</code> — Colorbar label</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<!-- PLOT STYLES SECTION -->
+<section id="styles" class="section bg-light">
+    <div class="container">
+        <h2 class="section-title">🎨 Plot Styles</h2>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'line-styles')">Line & Markers</button>
+            <button class="tab-btn" onclick="switchTab(event, 'distribution-styles')">Distribution</button>
+            <button class="tab-btn" onclick="switchTab(event, 'special-styles')">Special Plots</button>
+        </div>
+
+        <!-- LINE & MARKERS -->
+        <div id="line-styles" class="tab-content active">
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Style</th>
+                        <th>Alias</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>lines</code></td><td><code>l</code></td><td>Solid line</td><td><code>with lines</code></td></tr>
+                    <tr><td><code>dashed</code></td><td></td><td>Dashed line</td><td><code>with dashed</code></td></tr>
+                    <tr><td><code>dotted</code></td><td></td><td>Dotted line</td><td><code>with dotted</code></td></tr>
+                    <tr><td><code>points</code></td><td><code>p</code></td><td>Circle markers only</td><td><code>with points</code></td></tr>
+                    <tr><td><code>linespoints</code></td><td><code>lp</code></td><td>Line + circle markers</td><td><code>with linespoints</code></td></tr>
+                    <tr><td><code>stars</code></td><td></td><td>Star markers</td><td><code>with stars</code></td></tr>
+                    <tr><td><code>d</code></td><td></td><td>Diamond markers</td><td><code>with d</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- DISTRIBUTION STYLES -->
+        <div id="distribution-styles" class="tab-content">
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Style</th>
+                        <th>Description</th>
+                        <th>Example</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>hist</code></td><td>Histogram (seaborn histplot)</td><td><code>with hist bin 30</code></td></tr>
+                    <tr><td><code>kde</code></td><td>Kernel Density Estimation</td><td><code>with kde</code></td></tr>
+                    <tr><td><code>box</code></td><td>Box-and-whisker plot</td><td><code>with box</code></td></tr>
+                    <tr><td><code>violin</code></td><td>Violin plot</td><td><code>with violin</code></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- SPECIAL STYLES -->
+        <div id="special-styles" class="tab-content">
+            <table class="command-table">
+                <thead>
+                    <tr>
+                        <th>Style</th>
+                        <th>Description</th>
+                        <th>Requirements</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>errorbars / eb</code></td><td>Discrete error bars</td><td>Requires <code>yerr &lt;col&gt;</code></td></tr>
+                    <tr><td><code>errorshade / es</code></td><td>Shaded ±σ band</td><td>Requires <code>yerr &lt;col&gt;</code></td></tr>
+                    <tr><td><code>scatter</code></td><td>Scatter with colormap</td><td>Requires <code>cmap &lt;col&gt;</code></td></tr>
+                    <tr><td><code>heatmap</code></td><td>2D heatmap</td><td>2D matrix file</td></tr>
+                    <tr><td><code>contour</code></td><td>Contour lines</td><td>2D matrix file</td></tr>
+                    <tr><td><code>contourf</code></td><td>Filled contours</td><td>2D matrix file</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- ADVANCED FEATURES SECTION -->
+<section class="section">
+    <div class="container">
+        <h2 class="section-title">⚡ Advanced Features</h2>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'axis-format')">Axis Formatting</button>
+            <button class="tab-btn" onclick="switchTab(event, 'math-func')">Math Functions</button>
+            <button class="tab-btn" onclick="switchTab(event, 'subplots-feature')">Subplots</button>
+            <button class="tab-btn" onclick="switchTab(event, 'logscale-feature')">Log Scale</button>
+        </div>
+
+        <!-- AXIS FORMATTING -->
+        <div id="axis-format" class="tab-content active">
+            <h3>Scientific Notation</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp data.csv using 1:2 with lines sci_notation both</code>
+            </div>
+            <p>Options: <code>x</code>, <code>y</code>, or <code>both</code></p>
+
+            <h3 style="margin-top: 20px;">Custom Tick Positions</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp angles.csv using 1:2 with points xticks "0,90,180,270"</code>
+            </div>
+
+            <h3 style="margin-top: 20px;">Tick Rotation</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp data.csv using 1:2 with lines xtick_rotation 45 ytick_rotation 90</code>
+            </div>
+
+            <h3 style="margin-top: 20px;">Date Formatting</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp timeseries.csv using 1:2 with lines date_format "%Y-%m-%d"</code>
+            </div>
+            <p><strong>Format codes:</strong> <code>%Y</code> (year), <code>%m</code> (month), <code>%d</code> (day), <code>%H</code> (hour), <code>%M</code> (min), <code>%S</code> (sec)</p>
+        </div>
+
+        <!-- MATH FUNCTIONS -->
+        <div id="math-func" class="tab-content">
+            <h3>Basic Function Plot</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp func: "f(x) = np.sin(x)" xrange 0:10</code>
+            </div>
+
+            <h3 style="margin-top: 20px;">Function with Parameters</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp func: "f(x,a=2,b=0.5) = a*np.exp(-b*x)" xrange 0:10</code>
+            </div>
+
+            <h3 style="margin-top: 20px;">Common Expressions</h3>
+            <ul style="margin-left: 20px; line-height: 2.2;">
+                <li><code>np.sin(x)</code>, <code>np.cos(x)</code>, <code>np.tan(x)</code> — Trigonometric</li>
+                <li><code>np.exp(x)</code>, <code>np.log(x)</code>, <code>np.sqrt(x)</code> — Exponential & Logarithmic</li>
+                <li><code>np.where(condition, true_val, false_val)</code> — Conditional</li>
+                <li><code>np.linspace(start, stop, num)</code> — Linear spacing</li>
+            </ul>
+        </div>
+
+        <!-- SUBPLOTS -->
+        <div id="subplots-feature" class="tab-content">
+            <h3>2×2 Grid Layout</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp --subplot AB-CD "data1.csv using 1:2 with lines, data2.csv using 1:2 with hist, data3.csv using 1:2 with kde, data4.csv using 1:2 with scatter cmap 3"</code>
+            </div>
+
+            <h3 style="margin-top: 20px;">Asymmetric Layout</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp --subplot AA-BC "top_spans_two, bottom_left, bottom_right"</code>
+            </div>
+
+            <div class="alert alert-info" style="margin-top: 20px;">
+                <strong>Layout Format:</strong>
+                <ul>
+                    <li>Letters represent panels (A, B, C, ...)</li>
+                    <li>Use <code>-</code> to separate rows</li>
+                    <li>Each command separated by comma</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- LOG SCALE -->
+        <div id="logscale-feature" class="tab-content">
+            <h3>Logarithmic X-Axis</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp spectrum.csv using 1:2 with lines --xlog</code>
+            </div>
+
+            <h3 style="margin-top: 20px;">Logarithmic Y-Axis</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp spectrum.csv using 1:2 with lines --ylog</code>
+            </div>
+
+            <h3 style="margin-top: 20px;">Both Axes Logarithmic</h3>
+            <div class="code-block">
+                <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                <code>mfp spectrum.csv using 1:2 with lines --xlog --ylog</code>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- EXAMPLES SECTION -->
+<section id="examples" class="section bg-light">
+    <div class="container">
+        <h2 class="section-title">📝 Examples & Recipes</h2>
+
+        <div class="examples-grid">
+            <div class="example-card">
+                <h4><i class="fas fa-chart-line"></i> Basic Line Plot</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp data.csv using 1:2 with lines lc tab:blue legend "Series A"</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-layer-group"></i> Multiple Series (Overlay)</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp "data.csv using 1:2 with lines lc green, data.csv using 1:3 with dashed lc red"</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-chart-bar"></i> Error Bars (Discrete)</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp data.csv using 1:2 with errorbars yerr 3</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-water"></i> Error Shaded Band</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp "data.csv using 1:2 with errorshade yerr 3 lc steelblue, data.csv using 1:2 with lines lc steelblue"</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-dot-circle"></i> Colormap Scatter</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp results.csv using 1:2 with scatter cmap 3 colormap plasma</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-fire"></i> Heatmap</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp matrix.dat with heatmap colormap viridis cbar_label "Intensity"</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-contaur"></i> Filled Contour Plot</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp matrix.dat with contourf levels 20 colormap RdBu</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-chart-area"></i> Log-Scale Spectrum</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp spectrum.csv using 1:2 with lines --xlog --ylog</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-signal"></i> Histogram</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp samples.csv using 0:1 with hist bin 30 lc tab:orange</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-function"></i> Math Function</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp func: "f(x,a=1) = a*np.sin(x)" xrange 0:10 lc tab:green</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-border-all"></i> 2×2 Subplot Grid</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp --subplot AB-CD "d1.csv using 1:2 with lines, d2.csv using 1:2 with hist, d3.csv using 1:2 with kde, d4.csv using 1:2 with scatter cmap 3"</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-file-pdf"></i> Publication-Quality PDF</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp data.csv using 1:2 with lines title "Results" xlabel "Time" ylabel "Value" sci_notation y --save figure.pdf</code>
+                </div>
+            </div>
+
+            <div class="example-card">
+                <h4><i class="fas fa-redo"></i> Replay Session</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp plot.json</code>
+                </div>
+                <p style="color: #666; margin-top: 10px; font-size: 14px;">MFP saves last plot config to <code>plot.json</code></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DATA MANIPULATOR SECTION -->
+<section id="dm" class="section">
+    <div class="container">
+        <h2 class="section-title">🔧 Data Manipulator (DM)</h2>
+        <p style="text-align: center; font-size: 18px; color: #666; margin-bottom: 40px;">
+            Interactive tool for slicing, filtering, cleaning, and transforming data without writing code.
+        </p>
+
+        <div class="row">
+            <div>
+                <h3><i class="fas fa-rocket"></i> Quick Start</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp DM</code>
+                </div>
+
+                <h3 style="margin-top: 20px;"><i class="fas fa-list"></i> Features</h3>
+                <ul style="margin-left: 20px; line-height: 2;">
+                    <li><strong>Inspection:</strong> show, head, tail, properties, counts</li>
+                    <li><strong>Filtering:</strong> filter, slice, sort</li>
+                    <li><strong>Transformation:</strong> rename, cast, addcol, modify, delete</li>
+                    <li><strong>Cleaning:</strong> dedup, fillna, dropna</li>
+                    <li><strong>I/O:</strong> load, generate, append, merge, save</li>
+                    <li><strong>History:</strong> undo, redo</li>
+                </ul>
+            </div>
+
+            <div>
+                <h3><i class="fas fa-file-import"></i> Supported Formats</h3>
+                <div style="background: #f5f5f5; padding: 20px; border-radius: 8px; line-height: 2.5;">
+                    <div><strong>.csv</strong> — Comma-separated values</div>
+                    <div><strong>.xlsx / .xls</strong> — Excel workbooks</div>
+                    <div><strong>.json</strong> — JSON arrays</div>
+                </div>
+
+                <h3 style="margin-top: 30px;"><i class="fas fa-book"></i> Get Help</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>python mfp_dmanp_help.py</code>
+                </div>
+                <p style="color: #666; margin-top: 10px; font-size: 14px;">Sections: overview, filter, transform, clean, io, history, tips</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <div class="footer-content">
+            <div>
+                <h4>MFP</h4>
+                <p>MultiFunctionPlotter — A versatile plotting tool for data scientists, engineers, and AI agents.</p>
+                <div class="social-links">
+                    <a href="https://github.com/SwarnadeepSeth/mfp" target="_blank" title="GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+            <div>
+                <h4>Documentation</h4>
+                <ul>
+                    <li><a href="#quickstart">Quick Start</a></li>
+                    <li><a href="#commands">Commands</a></li>
+                    <li><a href="#styles">Styles</a></li>
+                    <li><a href="#examples">Examples</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Features</h4>
+                <ul>
+                    <li><a href="#features">Key Features</a></li>
+                    <li><a href="#advanced">Advanced Features</a></li>
+                    <li><a href="#dm">Data Manipulator</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Author</h4>
+                <p><strong>Dr. Swarnadeep Seth</strong></p>
+                <p>Version 1.2.0</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024-2026 MultiFunctionPlotter. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<script src="script.js"></script>
+
+</body>
+</html>
