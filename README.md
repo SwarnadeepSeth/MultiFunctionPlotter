@@ -38,6 +38,7 @@ A versatile Python-based tool for creating publication-quality plots from CSV, T
   - [Subplots](#subplots)
   - [Log Scale](#log-scale)
   - [Saving Figures](#saving-figures)
+    - [Custom Figure Size](#custom-figure-size)
   - [JSON Configuration](#json-configuration)
   - [Time Series Forecasting](#time-series-forecasting)
   - [Data Manipulator](#data-manipulator)
@@ -415,6 +416,16 @@ mfp data.csv using 1:2 with lines --save plot.svg
 - `.pdf` - Vector (best for publications)
 - `.svg` - Vector (good for editing)
 - `.eps` - Vector (legacy journals)
+
+### Custom Figure Size
+
+Set custom figure dimensions:
+
+```
+mfp data.csv using 1:2 with lines --figsize 10:5
+```
+
+This sets figure to 10×5 inches. Default is 12×6.
 
 ---
 
