@@ -147,6 +147,12 @@
                     <code>mfp data.csv using 1:2 with lines --save output.pdf</code>
                 </div>
 
+                <h3 style="margin-top: 20px;">Custom Figure Size</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>mfp data.csv using 1:2 with lines --figsize 10:5</code>
+                </div>
+
                 <h3>Multiple Series (Overlay)</h3>
                 <div class="code-block">
                     <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
@@ -298,6 +304,11 @@
                         <td><code>--subplot</code></td>
                         <td>Create subplot mosaic layout</td>
                         <td><code>--subplot AB-CD</code></td>
+                    </tr>
+                    <tr class="searchable">
+                        <td><code>--figsize</code></td>
+                        <td>Set figure size (width:height)</td>
+                        <td><code>--figsize 10:5</code></td>
                     </tr>
                     <tr class="searchable">
                         <td><code>--help</code></td>
@@ -893,7 +904,7 @@
             </div>
             <div>
                 <h4>Author</h4>
-                <p><strong>Dr. Swarnadeep Seth</strong></p>
+                <p><strong>Swarnadeep Seth</strong></p>
                 <p>Version 1.2.0</p>
             </div>
         </div>
