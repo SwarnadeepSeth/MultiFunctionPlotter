@@ -3,16 +3,19 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "multifunctionplotter"          
-version = "1.2.0"
+name = "multifunctionplotter"
+version = "1.0.3"
 description = "Publication-quality plots from CSV/TXT/DAT files — CLI, Python API, and MCP agent tool"
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.10"
+requires-python = ">=3.8"
+
 authors = [
     { name = "Swarnadeep Seth" }
 ]
+
 keywords = ["plotting", "visualization", "matplotlib", "cli", "mcp", "ai-agent"]
+
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -20,6 +23,7 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Visualization",
     "Environment :: Console",
 ]
+
 dependencies = [
     "matplotlib",
     "numpy",
@@ -31,20 +35,22 @@ dependencies = [
 [project.optional-dependencies]
 forecast = ["prophet", "scipy", "statsmodels"]
 
+# ENTRY POINTS
 [project.scripts]
-mfp     = "mfp:main"
-mfp-mcp = "mfp_server:main"
+mfp = "multifunctionplotter.mfp:main"
+mfp-mcp = "multifunctionplotter.mfp_server:main"
 
 [project.urls]
-Homepage   = "https://github.com/SwarnadeepSeth/MultiFunctionPlotter"
+Homepage = "https://github.com/SwarnadeepSeth/MultiFunctionPlotter"
 Repository = "https://github.com/SwarnadeepSeth/MultiFunctionPlotter"
 
+# PACKAGE DISCOVERY
+[tool.setuptools]
+package-dir = {"" = "src"}
+
 [tool.setuptools.packages.find]
-where = ["."]
-include = ["src*"]
+where = ["src"]
 
+# include style file inside package
 [tool.setuptools.package-data]
-"*" = ["custom_style.mplstyle"]
-
-[tool.setuptools.py-modules]
-# flat modules at repo root that pip should include
+"multifunctionplotter" = ["custom_style.mplstyle"]
