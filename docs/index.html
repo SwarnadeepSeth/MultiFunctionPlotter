@@ -118,14 +118,33 @@
                 <h3>Installation</h3>
                 <div class="code-block">
                     <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                    <code>pip install -r requirements.txt</code>
+                    <code>pip3 install multifunctionplotter</code>
                 </div>
-                <p style="margin-top: 10px; color: #666;">Or install as global command:</p>
+                <p style="margin-top: 10px; color: #666;">Then run anywhere:</p>
                 <div class="code-block">
                     <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
-                    <code>install.sh</code>
+                    <code>mfp --help</code>
                 </div>
-                <p style="margin-top: 10px; color: #666; font-size: 14px;">This creates a symlink at /usr/local/bin/mfp for global access.</p>
+
+                <h3 style="margin-top: 30px;">MCP Server (for AI Assistants)</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>pip3 install multifunctionplotter && mfp-mcp</code>
+                </div>
+                <p style="margin-top: 10px; color: #666; font-size: 14px;">
+                    <strong>Claude Code:</strong><br>
+                    <code>claude mcp add mfp -- mfp-mcp</code>
+                </p>
+                <p style="margin-top: 5px; color: #666; font-size: 14px;">
+                    <strong>opencode</strong> — add to <code>~/.config/opencode/opencode.json</code>:
+                </p>
+                <pre style="background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 5px; font-size: 12px; overflow-x: auto;">{
+  "mfp": {
+    "type": "local",
+    "command": ["mfp-mcp"],
+    "enabled": true
+  }
+}</pre>
 
                 <h3>Basic Line Plot</h3>
                 <div class="code-block">
