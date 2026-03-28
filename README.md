@@ -15,6 +15,8 @@ A versatile Python-based tool for creating publication-quality plots from CSV, T
   - [Installation](#installation)
     - [Option 1: Install Dependencies](#option-1-install-dependencies)
     - [Option 2: Install as Command-Line Tool (Recommended)](#option-2-install-as-command-line-tool-recommended)
+    - [MCP Server Installation](#mcp-server-installation)
+    - [Usage with AI Assistants](#usage-with-ai-assistants)
   - [Quick Start](#quick-start)
     - [Command Line](#command-line)
     - [Python API](#python-api)
@@ -99,15 +101,11 @@ pip install -r requirements.txt
 
 ### Option 2: Install as Command-Line Tool (Recommended)
 
-Run the install script to make `mfp` available as a global command:
+Install directly from PyPI:
 
 ```
-bash install.sh
+pip3 install multifunctionplotter
 ```
-
-This will:
-1. Make `src/mfp.py` executable
-2. Create a symbolic link at `/usr/local/bin/mfp`
 
 After installation, you can run `mfp` from anywhere:
 
@@ -117,7 +115,32 @@ mfp --help
 mfp forecast
 ```
 
-**Note:** Requires sudo privileges to create the symbolic link in `/usr/local/bin`.
+### MCP Server Installation
+
+For AI assistant integration (Claude Code, opencode, etc.):
+
+```
+pip3 install multifunctionplotter
+mfp-mcp
+```
+
+### Usage with AI Assistants
+
+**Claude Code:**
+```
+claude mcp add mfp -- mfp-mcp
+```
+
+**opencode:** Add to `~/.config/opencode/opencode.json`:
+```json
+{
+  "mfp": {
+    "type": "local",
+    "command": ["mfp-mcp"],
+    "enabled": true
+  }
+}
+```
 
 ---
 
