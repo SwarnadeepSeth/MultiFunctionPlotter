@@ -113,6 +113,8 @@ class PlotConfig:
     style: str                = "lines"
     linewidth: int            = 2
     linecolor: Optional[str]  = None
+    #: Figure size as (width, height).
+    figsize: Optional[tuple[int, int]] = None
 
     # ── Labels ────────────────────────────────────────────────────────────────
     title: Optional[str]  = None
@@ -186,10 +188,11 @@ class CommandParser:
     _RE_YLABEL     = re.compile(r'ylabel "(.+?)"')
     _RE_LW         = re.compile(r"(?:linewidth|lw) (\d+)")
     _RE_LC         = re.compile(r"(?:linecolor|lc) (\S+)")
+    _RE_FIGSIZE    = re.compile(r"figsize (\d+):(\d+)")
     _RE_LEGEND     = re.compile(r"(?:legend|lg) (\S+)")
-    _RE_FUNC       = re.compile(r'func: ("[^"]+"|.+?)(?=\s+xrange|\s+yrange|\s+title|\s+xlabel|\s+ylabel|\s+legend|\s+lg|\s+with|\s+w|\s+linecolor|\s+lc|\s+linewidth|\s+lw|$)')
-    _RE_XRANGE     = re.compile(r"xrange (\d+):(\d+)")
-    _RE_YRANGE     = re.compile(r"yrange (\d+):(\d+)")
+    _RE_FUNC       = re.compile(r'func: ("[^"]+"|.+?)(?=\s+xrange|\s+yrange|\s+title|\s+xlabel|\s+ylabel|\s+legend|\s+lg|\s+with|\s+w|\s+linecolor|\s+lc|\s+linewidth|\s+lw|\s+-\d|$)')
+    _RE_XRANGE     = re.compile(r"xrange (-?\d+):(-?\d+)")
+    _RE_YRANGE     = re.compile(r"yrange (-?\d+):(-?\d+)")
     _RE_BIN        = re.compile(r"bin (\d+)")
     _RE_PARAMS     = re.compile(r"(\w+)=([\d.]+)")
     # ── New tokens v1.1 ───────────────────────────────────────────────────────
@@ -236,6 +239,8 @@ class CommandParser:
             cfg.linewidth = int(m.group(1))
         if m := cls._RE_LC.search(command):
             cfg.linecolor = m.group(1)
+        if m := cls._RE_FIGSIZE.search(command):
+            cfg.figsize = (int(m.group(1)), int(m.group(2)))
 
         # ── Labels ────────────────────────────────────────────────────────────
         if m := cls._RE_TITLE.search(command):
@@ -341,6 +346,7 @@ class JsonParser:
             style           = data.get("style", "lines"),
             linewidth       = data.get("linewidth", 2),
             linecolor       = data.get("linecolor", "tab:blue"),
+            figsize         = tuple(data.get("figsize")) if data.get("figsize") else None,
             title           = data.get("title"),
             xlabel          = data.get("xlabel", "X-axis"),
             ylabel          = data.get("ylabel", "Y-axis"),
@@ -937,11 +943,18 @@ def main() -> None:  # noqa: C901
 
     # Strip global flags before splitting into per-dataset commands.
     core_command = re.sub(
-        r"--(?:xlog|ylog|save \S+|subplot \S+)\s*", "", command
+        r"--(?:xlog|ylog|save \S+|subplot \S+|figsize \S+)\s*", "", command
     ).strip()
     
     # Split commands by comma, respecting quoted strings
     commands = _split_commands(core_command)
+
+    # Extract figsize from command if provided
+    figsize = DEFAULT_FIGSIZE
+    figsize_match = re.search(r"--figsize (\d+):(\d+)", command)
+    if figsize_match:
+        figsize = (int(figsize_match.group(1)), int(figsize_match.group(2)))
+        log.info("Figure size set to: %s", figsize)
 
     axd = None
 
@@ -954,11 +967,11 @@ def main() -> None:  # noqa: C901
         if "-" in layout:
             layout = "\n".join(row.strip() for row in layout.split("-"))
         log.info("Subplot layout: %r", layout)
-        fig, axd = plt.subplot_mosaic(layout, figsize=DEFAULT_FIGSIZE)
+        fig, axd = plt.subplot_mosaic(layout, figsize=figsize)
         process_subplots(commands, layout, axd)
 
     else:
-        plt.figure(figsize=DEFAULT_FIGSIZE)
+        plt.figure(figsize=figsize)
         process_plots(commands)
 
     # ── Post-draw global tweaks ───────────────────────────────────────────────
