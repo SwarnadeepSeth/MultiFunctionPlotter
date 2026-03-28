@@ -1,0 +1,4 @@
+include custom_style.mplstyle
+include requirements.txt
+include README.md
+include LICENSE

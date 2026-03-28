@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "multifunctionplotter"          
+version = "1.2.0"
+description = "Publication-quality plots from CSV/TXT/DAT files — CLI, Python API, and MCP agent tool"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+authors = [
+    { name = "Swarnadeep Seth" }
+]
+keywords = ["plotting", "visualization", "matplotlib", "cli", "mcp", "ai-agent"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Environment :: Console",
+]
+dependencies = [
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "seaborn",
+    "fastmcp",
+]
+
+[project.optional-dependencies]
+forecast = ["prophet", "scipy", "statsmodels"]
+
+[project.scripts]
+mfp     = "mfp:main"
+mfp-mcp = "mfp_server:main"
+
+[project.urls]
+Homepage   = "https://github.com/SwarnadeepSeth/MultiFunctionPlotter"
+Repository = "https://github.com/SwarnadeepSeth/MultiFunctionPlotter"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
+
+[tool.setuptools.package-data]
+"*" = ["custom_style.mplstyle"]
+
+[tool.setuptools.py-modules]
+# flat modules at repo root that pip should include

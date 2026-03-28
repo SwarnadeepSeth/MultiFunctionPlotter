@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "mfp": {
+      "command": "python",
+      "args": ["mfp_server.py"]
+    }
+  }
+}
