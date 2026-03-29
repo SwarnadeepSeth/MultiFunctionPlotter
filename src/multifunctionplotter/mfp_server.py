@@ -13,6 +13,7 @@ Add to Claude Code: claude mcp add mfp -- python /path/to/mfp_server.py
 Author: based on mfp by Dr. Swarnadeep Seth
 """
 
+import shutil
 import subprocess
 import sys
 import io
@@ -20,11 +21,40 @@ from pathlib import Path
 
 from fastmcp import FastMCP
 
-# ── Locate mfp.py relative to this server file ───────────────────────────────
-# Assumes mfp_server.py sits in the repo root, mfp.py is in src/
-_REPO_ROOT = Path(__file__).resolve().parent
-_MFP_PY    = _REPO_ROOT / "src" / "mfp.py"
-_MFP_CMD   = [sys.executable, str(_MFP_PY)]   # always calls the right Python
+# ── Locate the mfp executable ────────────────────────────────────────────────
+# MCP clients launch servers with a stripped PATH (no conda/venv on it), so
+# shutil.which("mfp") often fails even when mfp is properly installed.
+# Resolution order:
+#   1. Same bin/ directory as the Python running this server  ← most reliable
+#   2. shutil.which("mfp")                                    ← normal PATH
+#   3. src/mfp.py next to this file                           ← dev/repo layout
+
+def _find_mfp() -> list[str]:
+    # 1) Sibling of sys.executable (works inside any venv / conda env)
+    mfp_sibling = Path(sys.executable).parent / "mfp"
+    if mfp_sibling.exists():
+        return [str(mfp_sibling)]
+
+    # 2) PATH lookup (works when shell environment is inherited)
+    mfp_path = shutil.which("mfp")
+    if mfp_path:
+        return [mfp_path]
+
+    # 3) Dev/repo fallback: mfp.py lives in src/ next to this file
+    repo_root = Path(__file__).resolve().parent
+    mfp_py = repo_root / "src" / "mfp.py"
+    if mfp_py.exists():
+        return [sys.executable, str(mfp_py)]
+
+    raise FileNotFoundError(
+        "Cannot find mfp. Tried:\n"
+        f"  {Path(sys.executable).parent / 'mfp'} (sibling of current Python)\n"
+        f"  mfp on PATH\n"
+        f"  {repo_root / 'src' / 'mfp.py'} (dev layout)\n"
+        "Install with:  pip install multifunctionplotter"
+    )
+
+_MFP_CMD = _find_mfp()
 
 
 def _run(args: list[str], stdin_text: str | None = None) -> str:
@@ -249,6 +279,9 @@ def multi_plot(
     commands: str,
     save: str = "plot.png",
     subplot_layout: str = "",
+    title: str = "",
+    xlabel: str = "",
+    ylabel: str = "",
     xlog: bool = False,
     ylog: bool = False,
 ) -> str:
@@ -288,6 +321,9 @@ def multi_plot(
                           'AA-BC'   → A spans full top row, B and C share bottom
                         Leave empty to overlay all series on one axes.
 
+        title:          Overall figure title (applies to the whole plot).
+        xlabel:         X-axis label for the figure.
+        ylabel:         Y-axis label for the figure.
         xlog:           Log scale on x-axis (applies to all panels)
         ylog:           Log scale on y-axis (applies to all panels)
 
@@ -295,10 +331,13 @@ def multi_plot(
         Success message with output path, or error details.
 
     Examples:
-        # Two overlaid series
+        # Two overlaid series with axis labels
         multi_plot(
-            "data.csv using 0:2 with lines lc green, data.csv using 0:4 with lines lc blue",
-            save="comparison.png"
+            "data.csv using 0:2 with lines lc green legend Open, data.csv using 0:4 with lines lc blue legend Close",
+            save="comparison.png",
+            title="Open vs Close Price",
+            xlabel="Date",
+            ylabel="Price",
         )
 
         # 2-panel subplot grid
@@ -310,9 +349,7 @@ def multi_plot(
 
         # Asymmetric layout: full-width top, two panels bottom
         multi_plot(
-            "data.csv using 1:2 with lines title \\"Full series\\",
-             data.csv using 0:1 with hist,
-             data.csv using 0:2 with kde",
+            "data.csv using 1:2 with lines, data.csv using 0:1 with hist, data.csv using 0:2 with kde",
             subplot_layout="AA-BC",
             save="layout.png"
         )
@@ -321,12 +358,19 @@ def multi_plot(
     if subplot_layout:
         args += ["--subplot", subplot_layout]
 
-    # Pass the full multi-command string as a single argument
-    args += [commands, "--save", save]
+    # Build the full command string, appending global tokens after the series commands
+    cmd = commands
+    if title:  cmd += f' title "{title}"'
+    if xlabel: cmd += f' xlabel "{xlabel}"'
+    if ylabel: cmd += f' ylabel "{ylabel}"'
+
+    args += [cmd, "--save", save]
     if xlog: args += ["--xlog"]
     if ylog: args += ["--ylog"]
 
-    _run(args)
+    result = _run(args)
+    if result.startswith("Error"):
+        return result
     return f"Plot saved to: {save}"
 
 
@@ -600,4 +644,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

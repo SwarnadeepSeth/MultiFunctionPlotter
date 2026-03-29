@@ -804,17 +804,15 @@ def process_subplots(commands: list[str], layout: str, axd: dict) -> None:
         except Exception as exc:
             log.error("Failed subplot command %r: %s", command, exc)
 
-
 def save_plot(command: str) -> None:
     """Save the figure to disk if --save <path> appears in *command*."""
-    if "--save" not in sys.argv:
+    if "--save" not in command:   # ← was: sys.argv
         return
     m = re.search(r"--save (\S+)", command)
     if m:
         path = m.group(1)
         plt.savefig(path)
         log.info("Plot saved as '%s'.", path)
-
 
 # ── JSON persistence ──────────────────────────────────────────────────────────
 
@@ -870,40 +868,42 @@ def _build_command_string() -> str:
 def _split_commands(command_string: str) -> list[str]:
     """
     Split commands by comma, respecting quoted strings.
-    Only splits on comma when followed by a known keyword/pattern (new command).
+    Splits on comma when followed by a file path or known keyword.
     """
-    # Known patterns that indicate a new command after comma
-    new_command_patterns = ('data', 'func', 'matrix', 'plot', 'file')
-    
+    FILE_EXTENSIONS = re.compile(r'\S+\.(?:dat|csv|txt)\b')
+    new_command_keywords = ('func:', 'matrix', 'plot')
+
     tokens = []
     current = []
     in_quotes = False
-    
+
     i = 0
     while i < len(command_string):
         char = command_string[i]
-        
+
         if char in ('"', "'"):
             in_quotes = not in_quotes
             current.append(char)
         elif char == ',' and not in_quotes:
-            # Check what follows the comma
             rest = command_string[i+1:].lstrip()
-            if rest and any(rest.startswith(p) for p in new_command_patterns):
-                # This is a new command separator
+            # Split if followed by a file path (any path ending in .dat/.csv/.txt)
+            # or a known command keyword
+            is_new_command = (
+                FILE_EXTENSIONS.match(rest) is not None or
+                any(rest.startswith(p) for p in new_command_keywords)
+            )
+            if rest and is_new_command:
                 tokens.append(''.join(current).strip())
                 current = []
             else:
-                # Part of a value - don't split
                 current.append(char)
         else:
             current.append(char)
-        
+
         i += 1
-    
+
     tokens.append(''.join(current).strip())
     return [t for t in tokens if t]
-
 
 def main() -> None:  # noqa: C901
     """Parse CLI arguments and dispatch to the appropriate rendering path."""
