@@ -160,6 +160,17 @@ Replace `<path-to-mfp-mcp>` with the path from step 1.
 
 ---
 
+## Important Notes
+
+### CLI vs Python Tool
+
+The MFP CLI command and Python `mfp_multi_plot` tool work slightly differently:
+- CLI parses labels but may not save them to `plot.json` for replay
+- Python tool (`mfp_multi_plot`) handles subplot configurations more reliably
+- For complex plots, prefer the Python tool or the `mfp_plot_function` tool
+
+---
+
 ## Quick Start
 
 ### Command Line
@@ -421,6 +432,29 @@ mfp --subplot AB-CD "plot1, plot2, plot3, plot4"
 **Asymmetric Layout:**
 ```
 mfp --subplot AA-BC "top_full, bottom_left, bottom_right"
+```
+
+**Important: Subplot Labels**
+
+When using subplots, axis labels must be specified **per-command**, not globally:
+
+```
+# CORRECT - labels per subplot
+mfp "cmd1 xlabel 'X' ylabel 'Y', cmd2 xlabel 'A' ylabel 'B'"
+
+# Labels may not apply correctly to individual subplots when set globally
+```
+
+**Histogram Requirement:**
+
+The `hist` style requires both x and y columns (even if y is just a placeholder):
+
+```
+# CORRECT
+mfp data.csv using 5:0 with hist bin 25
+
+# WILL ERROR - missing y column
+mfp data.csv using 5 with hist bin 25
 ```
 
 ---
