@@ -132,15 +132,31 @@ claude mcp add mfp -- mfp-mcp
 ```
 
 **opencode:** Add to `~/.config/opencode/opencode.json`:
-```json
-{
-  "mfp": {
-    "type": "local",
-    "command": ["mfp-mcp"],
-    "enabled": true
-  }
-}
-```
+
+1. Find the mfp-mcp path:
+   ```bash
+   which mfp-mcp
+   ```
+
+2. Open the config file:
+   ```bash
+   nano ~/.config/opencode/opencode.json
+   ```
+
+3. Add the mfp configuration:
+   ```json
+   {
+     "$schema": "https://opencode.ai/config.json",
+     "mcp": {
+       "mfp": {
+         "type": "local",
+         "command": ["<path-to-mfp-mcp>"]
+       }
+     }
+   }
+   ```
+
+Replace `<path-to-mfp-mcp>` with the path from step 1.
 
 ---
 
