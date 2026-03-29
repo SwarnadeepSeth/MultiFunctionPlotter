@@ -194,6 +194,18 @@
                 </div>
             </div>
         </div>
+
+        <div class="alert alert-info" style="margin-top: 30px;">
+            <strong><i class="fas fa-lightbulb"></i> CLI vs Python Tool</strong>
+            <p style="margin-top: 10px;">
+                The MFP CLI command and Python tools work slightly differently:
+            </p>
+            <ul style="margin-top: 10px;">
+                <li>CLI parses labels but may not save them to <code>plot.json</code> for replay</li>
+                <li>Python tools (<code>mfp_multi_plot</code>, <code>mfp_plot</code>) handle complex plots more reliably</li>
+                <li>For subplots with specific labels, prefer Python tools or specify labels per-command</li>
+            </ul>
+        </div>
     </div>
 </section>
 
@@ -659,6 +671,26 @@
                     <li>Use <code>-</code> to separate rows</li>
                     <li>Each command separated by comma</li>
                 </ul>
+            </div>
+
+            <div class="alert alert-warning" style="margin-top: 20px;">
+                <strong>Important: Subplot Labels</strong><br>
+                When using subplots, axis labels must be specified <strong>per-command</strong>:
+                <div class="code-block" style="margin-top: 10px;">
+                    <code>mfp "cmd1 xlabel 'X' ylabel 'Y', cmd2 xlabel 'A' ylabel 'B'"</code>
+                </div>
+                Global xlabel/ylabel may not apply to individual subplots.
+            </div>
+
+            <div class="alert alert-warning" style="margin-top: 20px;">
+                <strong>Histogram Requirement</strong><br>
+                The <code>hist</code> style requires both x and y columns:
+                <div class="code-block" style="margin-top: 10px;">
+                    <code># CORRECT</code><br>
+                    <code>mfp data.csv using 5:0 with hist bin 25</code><br><br>
+                    <code># WILL ERROR - missing y column</code><br>
+                    <code>mfp data.csv using 5 with hist bin 25</code>
+                </div>
             </div>
         </div>
 
