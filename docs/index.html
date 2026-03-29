@@ -136,13 +136,22 @@
                     <code>claude mcp add mfp -- mfp-mcp</code>
                 </p>
                 <p style="margin-top: 5px; color: #666; font-size: 14px;">
-                    <strong>opencode</strong> — add to <code>~/.config/opencode/opencode.json</code>:
+                    <strong>opencode</strong> — find the path first:
+                </p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i> Copy</button>
+                    <code>which mfp-mcp</code>
+                </div>
+                <p style="margin-top: 5px; color: #666; font-size: 14px;">
+                    Then open <code>~/.config/opencode/opencode.json</code> and add:
                 </p>
                 <pre style="background: #1e1e1e; color: #d4d4d4; padding: 10px; border-radius: 5px; font-size: 12px; overflow-x: auto;">{
-  "mfp": {
-    "type": "local",
-    "command": ["mfp-mcp"],
-    "enabled": true
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "mfp": {
+      "type": "local",
+      "command": ["<path-to-mfp-mcp>"]
+    }
   }
 }</pre>
 
