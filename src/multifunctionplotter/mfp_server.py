@@ -55,7 +55,7 @@ def _find_mfp() -> list[str]:
     )
 
 _MFP_CMD = _find_mfp()
-
+_REPO_ROOT = Path(__file__).resolve().parent
 
 def _run(args: list[str], stdin_text: str | None = None) -> str:
     """Run mfp with the given args and return combined stdout+stderr."""
@@ -196,7 +196,9 @@ def plot(
     if xlog: args += ["--xlog"]
     if ylog: args += ["--ylog"]
 
-    _run(args)
+    result = _run(args)
+    if result.startswith("Error"):
+        return result
     return f"Plot saved to: {save}"
 
 
@@ -266,7 +268,9 @@ def plot_function(
     args = cmd_parts + ["--save", save]
     if ylog: args += ["--ylog"]
 
-    _run(args)
+    result =_run(args)
+    if result.startswith("Error"):
+        return result
     return f"Plot saved to: {save}"
 
 
@@ -413,9 +417,8 @@ def inspect_data(
     import sys
     import io
 
-    # Import MFPDataManipulator directly to capture output
-    sys.path.insert(0, str(_REPO_ROOT / "src"))
-    from mfp_dmanp import MFPDataManipulator
+    # Import the Data Manipulator directly to capture its print output
+    from multifunctionplotter.mfp_dmanp import MFPDataManipulator
 
     buf = io.StringIO()
     old_stdout = sys.stdout
@@ -538,8 +541,8 @@ def clean_data(
             dropna_col="date"
         )
     """
-    sys.path.insert(0, str(_REPO_ROOT / "src"))
-    from mfp_dmanp import MFPDataManipulator
+    
+    from multifunctionplotter.mfp_dmanp import MFPDataManipulator
 
     buf = io.StringIO()
     old_stdout = sys.stdout
@@ -581,7 +584,7 @@ def clean_data(
             dm.fillna(fillna_col, fillna_value)
             steps_done.append(f"Filled NaN in '{fillna_col}' with {fillna_value}")
 
-        if dropna_col is not None and dropna_col != "__skip__":
+        if dropna_col:
             dm.dropna(dropna_col if dropna_col else None)
             scope = f"'{dropna_col}'" if dropna_col else "any column"
             steps_done.append(f"Dropped NaN rows in {scope}")
