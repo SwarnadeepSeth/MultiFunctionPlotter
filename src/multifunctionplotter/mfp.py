@@ -707,7 +707,7 @@ class Plotter:
             common["ax"] = ax
 
         if style == "hist":
-            sns.histplot(data=x_data, bins=self.cfg.bin, **common)
+            sns.histplot(data=x_data, bins=self.cfg.bin, alpha=0.5, multiple="layer", **common)
         elif style == "kde":
             sns.kdeplot(data=x_data, **common)
         elif style == "box":
