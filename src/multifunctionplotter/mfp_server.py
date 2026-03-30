@@ -290,74 +290,91 @@ def multi_plot(
     ylog: bool = False,
 ) -> str:
     """
-    Plot multiple series on one figure, or arrange plots in a subplot grid.
+        Plot multiple series on one figure, or arrange plots in a subplot grid.
 
-    This exposes mfp's full multi-command syntax — the most powerful tool
-    for complex figures. Comma-separate individual plot commands.
+        This exposes mfp's full multi-command syntax — the most powerful tool
+        for complex figures. Comma-separate individual plot commands.
 
-    IMPORTANT: Each sub-command must start with a filename or 'func:'.
-    mfp uses the first token of each comma-separated part to detect splits.
+        IMPORTANT: Each sub-command must start with a filename or 'func:'.
+        mfp uses the first token of each comma-separated part to detect splits.
 
-    Args:
-        commands:       One or more mfp commands, comma-separated.
-                        Each command follows the same syntax as the plot tool.
+        IMPORTANT: For subplots, axis labels must be specified per-command, not globally.
+        IMPORTANT: hist style requires both x and y columns — use 0 as y placeholder if needed.
 
-                        Multiple series on one axes:
-                          'data.csv using 0:2 with lines lc green legend Open,
-                           data.csv using 0:4 with lines lc blue legend Close'
+        Args:
+            commands:       One or more mfp commands, comma-separated.
+                            Each command follows the same syntax as the plot tool.
 
-                        Error band + mean line overlay (classic combo):
-                          'data.dat using 1:2 with errorshade yerr 3 lc steelblue,
-                           data.dat using 1:2 with lines lc steelblue'
+                            Multiple series on one axes:
+                            'data.csv using 0:2 with lines lc green legend Open,
+                            data.csv using 0:4 with lines lc blue legend Close'
 
-                        Multiple functions:
-                          'func: "f(x) = np.sin(x)" xrange -10:10 lc blue,
-                           func: "f(x) = np.cos(x)" xrange -10:10 lc red'
+                            Error band + mean line overlay (classic combo):
+                            'data.dat using 1:2 with errorshade yerr 3 lc steelblue,
+                            data.dat using 1:2 with lines lc steelblue'
 
-        save:           Output file path. Default: plot.png
+                            Multiple functions:
+                            'func: "f(x) = np.sin(x)" xrange -10:10 lc blue,
+                            func: "f(x) = np.cos(x)" xrange -10:10 lc red'
 
-        subplot_layout: Optional layout string for subplot grids.
-                        Letters = panels, '-' separates rows.
-                        Each panel gets one comma-separated command (left→right, top→bottom).
-                        Examples:
-                          'AB'      → 1 row, 2 panels side by side
-                          'AB-CD'   → 2×2 grid
-                          'AA-BC'   → A spans full top row, B and C share bottom
-                        Leave empty to overlay all series on one axes.
+                            Subplots with per-command labels (CORRECT):
+                            'data.csv using 1:2 with lines xlabel "Time" ylabel "Value",
+                            data.csv using 1:0 with hist bin 20 xlabel "X" ylabel "Count"'
 
-        title:          Overall figure title (applies to the whole plot).
-        xlabel:         X-axis label for the figure.
-        ylabel:         Y-axis label for the figure.
-        xlog:           Log scale on x-axis (applies to all panels)
-        ylog:           Log scale on y-axis (applies to all panels)
+            save:           Output file path. Default: plot.png
 
-    Returns:
-        Success message with output path, or error details.
+            subplot_layout: Optional layout string for subplot grids.
+                            Letters = panels, '-' separates rows.
+                            Each panel gets one comma-separated command (left→right, top→bottom).
+                            Examples:
+                            'AB'      → 1 row, 2 panels side by side
+                            'AB-CD'   → 2×2 grid
+                            'AA-BC'   → A spans full top row, B and C share bottom
+                            Leave empty to overlay all series on one axes.
 
-    Examples:
-        # Two overlaid series with axis labels
-        multi_plot(
-            "data.csv using 0:2 with lines lc green legend Open, data.csv using 0:4 with lines lc blue legend Close",
-            save="comparison.png",
-            title="Open vs Close Price",
-            xlabel="Date",
-            ylabel="Price",
-        )
+            title:          Figure title (applied to last series — for subplots, embed
+                            xlabel/ylabel inside each command instead).
+            xlabel:         X-axis label. WARNING: for subplots embed inside each command
+                            e.g. 'data.csv using 1:2 with lines xlabel "Time"'
+            ylabel:         Y-axis label. Same caveat as xlabel for subplots.
+            xlog:           Log scale on x-axis (applies to all panels)
+            ylog:           Log scale on y-axis (applies to all panels)
 
-        # 2-panel subplot grid
-        multi_plot(
-            "data.csv using 1:2 with lines, data.csv using 0:1 with hist bin 30",
-            subplot_layout="AB",
-            save="grid.png"
-        )
+        Returns:
+            Success message with output path, or error details.
 
-        # Asymmetric layout: full-width top, two panels bottom
-        multi_plot(
-            "data.csv using 1:2 with lines, data.csv using 0:1 with hist, data.csv using 0:2 with kde",
-            subplot_layout="AA-BC",
-            save="layout.png"
-        )
-    """
+        NOTES:
+            - hist style requires both x and y columns — use 0 as y placeholder:
+            CORRECT:  'data.csv using 5:0 with hist bin 25' (always keep the second column to zero for hist)
+            WRONG:    'data.csv using 5 with hist bin 25'  ← will error
+
+        Examples:
+            # Two overlaid series with axis labels
+            multi_plot(
+                "data.csv using 0:2 with lines lc green legend Open, data.csv using 0:4 with lines lc blue legend Close",
+                save="comparison.png",
+                title="Open vs Close Price",
+                xlabel="Date",
+                ylabel="Price",
+            )
+
+            # 2-panel subplot grid — labels per command
+            multi_plot(
+                'data.csv using 1:2 with lines xlabel "Time" ylabel "Value", '
+                'data.csv using 1:0 with hist bin 30 xlabel "X" ylabel "Count"',
+                subplot_layout="AB",
+                save="grid.png"
+            )
+
+            # Asymmetric layout: full-width top, two panels bottom
+            multi_plot(
+                'data.csv using 1:2 with lines xlabel "Time" ylabel "Value", '
+                'data.csv using 1:0 with hist xlabel "X" ylabel "Count", '
+                'data.csv using 0:2 with kde xlabel "X" ylabel "Density"',
+                subplot_layout="AA-BC",
+                save="layout.png"
+            )
+        """
     args = []
     if subplot_layout:
         args += ["--subplot", subplot_layout]
