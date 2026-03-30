@@ -183,24 +183,24 @@ class CommandParser:
     _RE_TEXT       = re.compile(r"(\S+\.(?:txt|dat))")
     _RE_USING      = re.compile(r"(?:using|u) (\d+):(\d+)")
     _RE_STYLE      = re.compile(r"(?:with|w) (\w+)")
-    _RE_TITLE      = re.compile(r'(?:title "(.+?)"|title (.+?)(?=\s+(?:xlabel|ylabel|legend|lg|with|w|lc|lw|linecolor|linewidth))|title (.+)$)')
-    _RE_XLABEL     = re.compile(r'(?:xlabel "(.+?)"|xlabel (.+?)(?=\s+(?:title|ylabel|legend|lg|with|w|lc|lw|linecolor|linewidth))|xlabel (.+)$)')
-    _RE_YLABEL     = re.compile(r'(?:ylabel "(.+?)"|ylabel (.+?)(?=\s+(?:title|xlabel|legend|lg|with|w|lc|lw|linecolor|linewidth))|ylabel (.+)$)')
+    _RE_TITLE      = re.compile(r'title "(.+?)"')
+    _RE_XLABEL     = re.compile(r'xlabel "(.+?)"')
+    _RE_YLABEL     = re.compile(r'ylabel "(.+?)"')
     _RE_LW         = re.compile(r"(?:linewidth|lw) (\d+)")
     _RE_LC         = re.compile(r"(?:linecolor|lc) (\S+)")
     _RE_FIGSIZE    = re.compile(r"figsize (\d+):(\d+)")
-    _RE_LEGEND     = re.compile(r'(?:legend|lg) "(.+?)"|(?:legend|lg) (.+?)(?=\s+(?:title|xlabel|ylabel|with|w|lc|lw|linecolor|linewidth))|(?:legend|lg) (.+)$')
+    _RE_LEGEND     = re.compile(r"(?:legend|lg) (\S+)")
     _RE_FUNC       = re.compile(r'func: ("[^"]+"|.+?)(?=\s+xrange|\s+yrange|\s+title|\s+xlabel|\s+ylabel|\s+legend|\s+lg|\s+with|\s+w|\s+linecolor|\s+lc|\s+linewidth|\s+lw|\s+-\d|$)')
     _RE_XRANGE     = re.compile(r"xrange (-?\d+):(-?\d+)")
     _RE_YRANGE     = re.compile(r"yrange (-?\d+):(-?\d+)")
     _RE_BIN        = re.compile(r"bin (\d+)")
     _RE_PARAMS     = re.compile(r"(\w+)=([\d.]+)")
     # ── New tokens v1.1 ───────────────────────────────────────────────────────
-    _RE_YERR       = re.compile(r"(?:yerr|yerr_col) (\d+)")
+    _RE_YERR       = re.compile(r"yerr (\d+)")
     _RE_CAPSIZE    = re.compile(r"capsize (\d+)")
     _RE_CMAP_COL   = re.compile(r"cmap (\d+)")
-    _RE_COLORMAP   = re.compile(r'(?:colormap "(.+?)"|colormap (\S+))')
-    _RE_CBAR_LABEL = re.compile(r'(?:cbar_label "(.+?)"|cbar_label (\S+))')
+    _RE_COLORMAP   = re.compile(r"colormap (\S+)")
+    _RE_CBAR_LABEL = re.compile(r'cbar_label "(.+?)"')
     _RE_LEVELS     = re.compile(r"levels (\d+)")
 
     # ── Advanced axis formatting v1.2 ──────────────────────────────────────────
@@ -244,13 +244,13 @@ class CommandParser:
 
         # ── Labels ────────────────────────────────────────────────────────────
         if m := cls._RE_TITLE.search(command):
-            cfg.title = m.group(1) or m.group(2) or m.group(3)
+            cfg.title = m.group(1)
         if m := cls._RE_XLABEL.search(command):
-            cfg.xlabel = m.group(1) or m.group(2) or m.group(3)
+            cfg.xlabel = m.group(1)
         if m := cls._RE_YLABEL.search(command):
-            cfg.ylabel = m.group(1) or m.group(2) or m.group(3)
+            cfg.ylabel = m.group(1)
         if m := cls._RE_LEGEND.search(command):
-            cfg.legend = m.group(1) or m.group(2) or m.group(3)
+            cfg.legend = m.group(1)
 
         # ── Math function ─────────────────────────────────────────────────────
         if m := cls._RE_FUNC.search(command):
@@ -275,9 +275,9 @@ class CommandParser:
         if m := cls._RE_CMAP_COL.search(command):
             cfg.cmap_col = int(m.group(1))
         if m := cls._RE_COLORMAP.search(command):
-            cfg.colormap = m.group(1) or m.group(2)
+            cfg.colormap = m.group(1)
         if m := cls._RE_CBAR_LABEL.search(command):
-            cfg.cbar_label = m.group(1) or m.group(2)
+            cfg.cbar_label = m.group(1)
 
         # ── 2-D ───────────────────────────────────────────────────────────────
         if m := cls._RE_LEVELS.search(command):
@@ -313,7 +313,7 @@ class CommandParser:
         # Error-bar styles need yerr_col.
         if style in ERRORBAR_STYLES and cfg.yerr_col is None:
             raise ValueError(
-                f"Style '{style}' requires yerr <col> in the command."
+                f"Style '{style}' requires  yerr <col>  in the command."
             )
 
         # Colormap scatter needs cmap_col.

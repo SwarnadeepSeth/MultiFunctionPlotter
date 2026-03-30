@@ -311,8 +311,7 @@ def multi_plot(
                             data.csv using 0:4 with lines lc blue legend Close'
 
                             Error band + mean line overlay (classic combo):
-                            'data.dat using 1:2 with errorshade yerr 3 lc steelblue,
-                            data.dat using 1:2 with lines lc steelblue'
+                            'data.dat using 1:2 with errorshade yerr 3 lc steelblue
 
                             Multiple functions:
                             'func: "f(x) = np.sin(x)" xrange -10:10 lc blue,

@@ -196,7 +196,7 @@ class CommandParser:
     _RE_BIN        = re.compile(r"bin (\d+)")
     _RE_PARAMS     = re.compile(r"(\w+)=([\d.]+)")
     # ── New tokens v1.1 ───────────────────────────────────────────────────────
-    _RE_YERR       = re.compile(r"(?:yerr|yerr_col) (\d+)")
+    _RE_YERR       = re.compile(r"yerr (\d+)")
     _RE_CAPSIZE    = re.compile(r"capsize (\d+)")
     _RE_CMAP_COL   = re.compile(r"cmap (\d+)")
     _RE_COLORMAP   = re.compile(r'(?:colormap "(.+?)"|colormap (\S+))')
@@ -313,7 +313,7 @@ class CommandParser:
         # Error-bar styles need yerr_col.
         if style in ERRORBAR_STYLES and cfg.yerr_col is None:
             raise ValueError(
-                f"Style '{style}' requires yerr <col> in the command."
+                f"Style '{style}' requires  yerr <col>  in the command."
             )
 
         # Colormap scatter needs cmap_col.
