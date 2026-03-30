@@ -13,6 +13,7 @@ Add to Claude Code: claude mcp add mfp -- python /path/to/mfp_server.py
 Author: based on mfp by Dr. Swarnadeep Seth
 """
 
+import shutil
 import subprocess
 import sys
 import io
@@ -20,12 +21,41 @@ from pathlib import Path
 
 from fastmcp import FastMCP
 
-# ── Locate mfp.py relative to this server file ───────────────────────────────
-# Assumes mfp_server.py sits in the repo root, mfp.py is in src/
-_REPO_ROOT = Path(__file__).resolve().parent
-_MFP_PY    = _REPO_ROOT / "src" / "mfp.py"
-_MFP_CMD   = [sys.executable, str(_MFP_PY)]   # always calls the right Python
+# ── Locate the mfp executable ────────────────────────────────────────────────
+# MCP clients launch servers with a stripped PATH (no conda/venv on it), so
+# shutil.which("mfp") often fails even when mfp is properly installed.
+# Resolution order:
+#   1. Same bin/ directory as the Python running this server  ← most reliable
+#   2. shutil.which("mfp")                                    ← normal PATH
+#   3. src/mfp.py next to this file                           ← dev/repo layout
 
+def _find_mfp() -> list[str]:
+    # 1) Sibling of sys.executable (works inside any venv / conda env)
+    mfp_sibling = Path(sys.executable).parent / "mfp"
+    if mfp_sibling.exists():
+        return [str(mfp_sibling)]
+
+    # 2) PATH lookup (works when shell environment is inherited)
+    mfp_path = shutil.which("mfp")
+    if mfp_path:
+        return [mfp_path]
+
+    # 3) Dev/repo fallback: mfp.py lives in src/ next to this file
+    repo_root = Path(__file__).resolve().parent
+    mfp_py = repo_root / "src" / "mfp.py"
+    if mfp_py.exists():
+        return [sys.executable, str(mfp_py)]
+
+    raise FileNotFoundError(
+        "Cannot find mfp. Tried:\n"
+        f"  {Path(sys.executable).parent / 'mfp'} (sibling of current Python)\n"
+        f"  mfp on PATH\n"
+        f"  {repo_root / 'src' / 'mfp.py'} (dev layout)\n"
+        "Install with:  pip install multifunctionplotter"
+    )
+
+_MFP_CMD = _find_mfp()
+_REPO_ROOT = Path(__file__).resolve().parent
 
 def _run(args: list[str], stdin_text: str | None = None) -> str:
     """Run mfp with the given args and return combined stdout+stderr."""
@@ -82,8 +112,6 @@ def plot(
     cbar_label: str = "",
     levels: int = 10,
     bin: int = 0,
-    bar_width: float = 0.8,
-    bar_labels: bool = False,
 ) -> str:
     """
     Plot a single data series from a CSV, TXT, or DAT file.
@@ -100,7 +128,6 @@ def plot(
       Colormap    : scatter — needs cmap_col
       2-D matrix  : heatmap, contour, contourf  (no x_col/y_col needed)
       Distribution: hist, kde, box, violin
-      Bar charts  : bar (vertical), barh (horizontal)
 
     Args:
         file:           Path to data file (.csv, .txt, .dat)
@@ -108,13 +135,13 @@ def plot(
         y_col:          Column index for y-axis
         style:          Plot style (see above). Default: lines
         title:          Plot title (will be quoted automatically)
-        xlabel:         X-axis label
+        xlabel:         X-axis label 
         ylabel:         Y-axis label
         legend:         Legend entry for this series (single word, no spaces)
         linecolor:      Any matplotlib color: 'tab:blue', 'red', '#3a7ab3', 'steelblue'
         linewidth:      Line width in points. Default: 2
-        xrange:         X-axis limits as 'min:max', e.g. '0:100'
-        yrange:         Y-axis limits as 'min:max'
+        xrange:         X-axis limits as min:max, e.g. 0:100 (no quotes needed)
+        yrange:         Y-axis limits as min:max (no quotes needed)
         save:           Output file path. Supports .png .pdf .svg .eps. Default: plot.png
         xlog:           Use log scale on x-axis
         ylog:           Use log scale on y-axis
@@ -131,8 +158,6 @@ def plot(
         cbar_label:     Colorbar label text
         levels:         Number of contour levels for contour/contourf. Default: 10
         bin:            Number of histogram bins (0 = auto)
-        bar_width:      Width of bars for bar/barh charts. Default: 0.8
-        bar_labels:     Show value labels on bars. Default: False
 
     Returns:
         Success message with the output path, or error details.
@@ -140,10 +165,10 @@ def plot(
     Examples:
         plot("data.csv", 0, 4, style="lines", title="Close Price", save="price.png")
         plot("results.dat", 1, 2, style="errorbars", yerr_col=3, linecolor="tab:red")
-        plot("samples.csv", 0, 1, style="hist", bin=30, save="dist.pdf")
+        plot("samples.csv", 1, 0, style="hist", bin=30, save="dist.pdf") # x is data, y is ignored for hist
         plot("matrix.dat", 0, 0, style="heatmap", colormap="inferno", save="heat.png")
         plot("data.csv", 1, 2, style="scatter", cmap_col=3, colormap="plasma")
-        plot("data.csv", 0, 1, style="bar", bar_labels=True, linecolor="steelblue")
+        plot("data.dat", 1, 2, style="lines", xrange=0:100, yrange=0:500)
     """
     # Build the gnuplot-style command string that mfp parses
     cmd_parts = [file, "using", f"{x_col}:{y_col}", "with", style]
@@ -167,14 +192,14 @@ def plot(
     if cbar_label:      cmd_parts += [f'cbar_label "{cbar_label}"']
     if levels != 10:    cmd_parts += ["levels", str(levels)]
     if bin:             cmd_parts += ["bin", str(bin)]
-    if bar_width != 0.8: cmd_parts += ["width", str(bar_width)]
-    if bar_labels:      cmd_parts += ["bar_labels", "true"]
 
     args = cmd_parts + ["--save", save]
     if xlog: args += ["--xlog"]
     if ylog: args += ["--ylog"]
 
-    _run(args)
+    result = _run(args)
+    if result.startswith("Error"):
+        return result
     return f"Plot saved to: {save}"
 
 
@@ -219,7 +244,7 @@ def plot_function(
         legend:     Legend entry (single word)
         linecolor:  Matplotlib color string
         linewidth:  Line width. Default: 2
-        yrange:     Y-axis limits as 'min:max'
+        yrange:     Y-axis limits as min:max (no quotes needed)
         ylog:       Use log scale on y-axis
 
     Returns:
@@ -244,7 +269,9 @@ def plot_function(
     args = cmd_parts + ["--save", save]
     if ylog: args += ["--ylog"]
 
-    _run(args)
+    result =_run(args)
+    if result.startswith("Error"):
+        return result
     return f"Plot saved to: {save}"
 
 
@@ -257,84 +284,114 @@ def multi_plot(
     commands: str,
     save: str = "plot.png",
     subplot_layout: str = "",
+    title: str = "",
+    xlabel: str = "",
+    ylabel: str = "",
     xlog: bool = False,
     ylog: bool = False,
 ) -> str:
     """
-    Plot multiple series on one figure, or arrange plots in a subplot grid.
+        Plot multiple series on one figure, or arrange plots in a subplot grid.
 
-    This exposes mfp's full multi-command syntax — the most powerful tool
-    for complex figures. Comma-separate individual plot commands.
+        This exposes mfp's full multi-command syntax — the most powerful tool
+        for complex figures. Comma-separate individual plot commands.
 
-    IMPORTANT: Each sub-command must start with a filename or 'func:'.
-    mfp uses the first token of each comma-separated part to detect splits.
+        IMPORTANT: Each sub-command must start with a filename or 'func:'.
+        mfp uses the first token of each comma-separated part to detect splits.
 
-    Args:
-        commands:       One or more mfp commands, comma-separated.
-                        Each command follows the same syntax as the plot tool.
+        IMPORTANT: For subplots, axis labels must be specified per-command, not globally.
+        IMPORTANT: hist style requires both x and y columns — use 0 as y placeholder.
 
-                        Multiple series on one axes:
-                          'data.csv using 0:2 with lines lc green legend Open,
-                           data.csv using 0:4 with lines lc blue legend Close'
+        Args:
+            commands:       One or more mfp commands, comma-separated.
+                            Each command follows the same syntax as the plot tool.
 
-                        Error band + mean line overlay (classic combo):
-                          'data.dat using 1:2 with errorshade yerr 3 lc steelblue,
-                           data.dat using 1:2 with lines lc steelblue'
+                            Multiple series on one axes:
+                            'data.csv using 0:2 with lines lc green legend Open,
+                            data.csv using 0:4 with lines lc blue legend Close'
 
-                        Multiple functions:
-                          'func: "f(x) = np.sin(x)" xrange -10:10 lc blue,
-                           func: "f(x) = np.cos(x)" xrange -10:10 lc red'
+                            Error band + mean line overlay (classic combo):
+                            'data.dat using 1:2 with errorshade yerr 3 lc steelblue
 
-        save:           Output file path. Default: plot.png
+                            Multiple functions:
+                            'func: "f(x) = np.sin(x)" xrange -10:10 lc blue,
+                            func: "f(x) = np.cos(x)" xrange -10:10 lc red'
 
-        subplot_layout: Optional layout string for subplot grids.
-                        Letters = panels, '-' separates rows.
-                        Each panel gets one comma-separated command (left→right, top→bottom).
-                        Examples:
-                          'AB'      → 1 row, 2 panels side by side
-                          'AB-CD'   → 2×2 grid
-                          'AA-BC'   → A spans full top row, B and C share bottom
-                        Leave empty to overlay all series on one axes.
+                            Subplots with per-command labels (CORRECT):
+                            'data.csv using 1:2 with lines xlabel "Time" ylabel "Value",
+                            data.csv using 1:0 with hist bin 20 xlabel "X" ylabel "Count"'
 
-        xlog:           Log scale on x-axis (applies to all panels)
-        ylog:           Log scale on y-axis (applies to all panels)
+            save:           Output file path. Default: plot.png
 
-    Returns:
-        Success message with output path, or error details.
+            subplot_layout: Optional layout string for subplot grids.
+                            Letters = panels, '-' separates rows.
+                            Each panel gets one comma-separated command (left→right, top→bottom).
+                            Examples:
+                            'AB'      → 1 row, 2 panels side by side
+                            'AB-CD'   → 2×2 grid
+                            'AA-BC'   → A spans full top row, B and C share bottom
+                            Leave empty to overlay all series on one axes.
 
-    Examples:
-        # Two overlaid series
-        multi_plot(
-            "data.csv using 0:2 with lines lc green, data.csv using 0:4 with lines lc blue",
-            save="comparison.png"
-        )
+            title:          Figure title (applied to last series — for subplots, embed
+                            xlabel/ylabel inside each command instead).
+            xlabel:         X-axis label. WARNING: for subplots embed inside each command
+                            e.g. 'data.csv using 1:2 with lines xlabel "Time"'
+            ylabel:         Y-axis label. Same caveat as xlabel for subplots.
+            xlog:           Log scale on x-axis (applies to all panels)
+            ylog:           Log scale on y-axis (applies to all panels)
 
-        # 2-panel subplot grid
-        multi_plot(
-            "data.csv using 1:2 with lines, data.csv using 0:1 with hist bin 30",
-            subplot_layout="AB",
-            save="grid.png"
-        )
+        Returns:
+            Success message with output path, or error details.
 
-        # Asymmetric layout: full-width top, two panels bottom
-        multi_plot(
-            "data.csv using 1:2 with lines title \\"Full series\\",
-             data.csv using 0:1 with hist,
-             data.csv using 0:2 with kde",
-            subplot_layout="AA-BC",
-            save="layout.png"
-        )
-    """
+        NOTES:
+            - hist style requires both x and y columns — use 0 as y placeholder:
+            CORRECT:  'data.csv using 5:0 with hist bin 25' (always keep the second column to zero for hist as x is data, y is ignored)
+            WRONG:    'data.csv using 5 with hist bin 25'  ← will error need y placeholder
+
+        Examples:
+            # Two overlaid series with axis labels
+            multi_plot(
+                "data.csv using 0:2 with lines lc green legend Open, data.csv using 0:4 with lines lc blue legend Close",
+                save="comparison.png",
+                title="Open vs Close Price",
+                xlabel="Date",
+                ylabel="Price",
+            )
+
+            # 2-panel subplot grid — labels per command
+            multi_plot(
+                'data.csv using 1:2 with lines xlabel "Time" ylabel "Value", '
+                'data.csv using 1:0 with hist bin 30 xlabel "X" ylabel "Count"',
+                subplot_layout="AB",
+                save="grid.png"
+            )
+
+            # Asymmetric layout: full-width top, two panels bottom
+            multi_plot(
+                'data.csv using 1:2 with lines xlabel "Time" ylabel "Value", '
+                'data.csv using 1:0 with hist xlabel "X" ylabel "Count", '
+                'data.csv using 0:2 with kde xlabel "X" ylabel "Density"',
+                subplot_layout="AA-BC",
+                save="layout.png"
+            )
+        """
     args = []
     if subplot_layout:
         args += ["--subplot", subplot_layout]
 
-    # Pass the full multi-command string as a single argument
-    args += [commands, "--save", save]
+    # Build the full command string, appending global tokens after the series commands
+    cmd = commands
+    if title:  cmd += f' title "{title}"'
+    if xlabel: cmd += f' xlabel "{xlabel}"'
+    if ylabel: cmd += f' ylabel "{ylabel}"'
+
+    args += [cmd, "--save", save]
     if xlog: args += ["--xlog"]
     if ylog: args += ["--ylog"]
 
-    _run(args)
+    result = _run(args)
+    if result.startswith("Error"):
+        return result
     return f"Plot saved to: {save}"
 
 
@@ -377,9 +434,8 @@ def inspect_data(
     import sys
     import io
 
-    # Import MFPDataManipulator directly to capture output
-    sys.path.insert(0, str(_REPO_ROOT / "src"))
-    from mfp_dmanp import MFPDataManipulator
+    # Import the Data Manipulator directly to capture its print output
+    from multifunctionplotter.mfp_dmanp import MFPDataManipulator
 
     buf = io.StringIO()
     old_stdout = sys.stdout
@@ -502,8 +558,8 @@ def clean_data(
             dropna_col="date"
         )
     """
-    sys.path.insert(0, str(_REPO_ROOT / "src"))
-    from mfp_dmanp import MFPDataManipulator
+    
+    from multifunctionplotter.mfp_dmanp import MFPDataManipulator
 
     buf = io.StringIO()
     old_stdout = sys.stdout
@@ -545,7 +601,7 @@ def clean_data(
             dm.fillna(fillna_col, fillna_value)
             steps_done.append(f"Filled NaN in '{fillna_col}' with {fillna_value}")
 
-        if dropna_col is not None and dropna_col != "__skip__":
+        if dropna_col:
             dm.dropna(dropna_col if dropna_col else None)
             scope = f"'{dropna_col}'" if dropna_col else "any column"
             steps_done.append(f"Dropped NaN rows in {scope}")
@@ -608,4 +664,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

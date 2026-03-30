@@ -73,8 +73,6 @@ STYLE_MAP: dict[str, str] = {
     "lp":          "-o",
     "stars":       "*",
     "d":           "d",
-    "bar":         "bar",
-    "barh":        "barh",
 }
 
 #: Seaborn distribution / summary styles (single column, no y needed).
@@ -88,9 +86,6 @@ COLORMAP_STYLES = {"scatter"}
 
 #: Styles that read the whole file as a 2-D matrix.
 TWO_D_STYLES = {"heatmap", "contour", "contourf"}
-
-#: Styles for bar charts.
-BAR_STYLES = {"bar", "barh"}
 
 
 # ══════════════════════════════════════════════════════════════════════════════
@@ -142,10 +137,6 @@ class PlotConfig:
     yerr_col: Optional[int]  = None
     #: Cap width in points for discrete error bars (errorbars style).
     capsize: int             = 4
-    #: Bar width for bar charts (default 0.8).
-    bar_width: float         = 0.8
-    #: Show value labels on bar charts.
-    bar_labels: bool         = False
 
     # ── Colormap scatter ─────────────────────────────────────────────────────
     #: 1-based column index whose values drive the point colour.
@@ -219,8 +210,6 @@ class CommandParser:
     _RE_YTICKS = re.compile(r'yticks ("[^"]+"|\S+)')
     _RE_XTICK_ROT = re.compile(r"xtick_rotation (-?\d+)")
     _RE_YTICK_ROT = re.compile(r"ytick_rotation (-?\d+)")
-    _RE_BAR_WIDTH = re.compile(r"width ([\d.]+)")
-    _RE_BAR_LABELS = re.compile(r"(?:bar_labels|blabels|labels) (true|false|1|0)")
 
     @classmethod
     def parse(cls, command: str) -> PlotConfig:
@@ -308,13 +297,6 @@ class CommandParser:
         if m := cls._RE_YTICK_ROT.search(command):
             cfg.ytick_rotation = int(m.group(1))
 
-        # ── Bar width ───────────────────────────────────────────────────────────
-        if m := cls._RE_BAR_WIDTH.search(command):
-            cfg.bar_width = float(m.group(1))
-        if m := cls._RE_BAR_LABELS.search(command):
-            val = m.group(1).lower()
-            cfg.bar_labels = val in ("true", "1")
-
         cls._validate(cfg)
         return cfg
 
@@ -338,12 +320,6 @@ class CommandParser:
         if style in COLORMAP_STYLES and cfg.cmap_col is None:
             raise ValueError(
                 "Style 'scatter' requires  cmap <col>  in the command."
-            )
-
-        # Bar styles need x_col and y_col.
-        if style in BAR_STYLES and (cfg.x_col is None or cfg.y_col is None):
-            raise ValueError(
-                f"Style '{style}' requires both x and y columns (using x:y)."
             )
 
         # Standard styles need file + columns (unless func:).
@@ -395,9 +371,6 @@ class JsonParser:
             yticks          = data.get("yticks"),
             xtick_rotation  = data.get("xtick_rotation", 0),
             ytick_rotation  = data.get("ytick_rotation", 0),
-            # Bar chart width
-            bar_width       = data.get("bar_width", 0.8),
-            bar_labels      = data.get("bar_labels", False),
         )
 
         if cfg.style not in TWO_D_STYLES:
@@ -725,8 +698,6 @@ class Plotter:
             self._draw_colormap_scatter(x_data, y_data, cmap_z, ax)
         elif style in SEABORN_STYLES:
             self._draw_seaborn(style, x_data, ax)
-        elif style in BAR_STYLES:
-            self._draw_bar(x_data, y_data, ax)
         else:
             self._draw_line(x_data, y_data, ax)
 
@@ -741,49 +712,6 @@ class Plotter:
             plt.plot(x_data, y_data, self.cfg.mpl_style, **kwargs)
         else:
             ax.plot(x_data, y_data, self.cfg.mpl_style, **kwargs)
-
-    def _draw_bar(self, x_data, y_data, ax) -> None:
-        """Draw vertical or horizontal bar chart."""
-        style = self.cfg.style
-        width = self.cfg.bar_width
-        color = self.cfg.linecolor
-        label = self.cfg.legend
-        show_labels = self.cfg.bar_labels
-
-        log.info("Drawing '%s' bar chart.", style)
-
-        if style == "bar":
-            kwargs = dict(width=width, color=color, label=label)
-            if ax is None:
-                bars = plt.bar(x_data, y_data, **kwargs)
-            else:
-                bars = ax.bar(x_data, y_data, **kwargs)
-            
-            if show_labels:
-                for bar in bars:
-                    height = bar.get_height()
-                    if ax is None:
-                        plt.text(bar.get_x() + bar.get_width()/2., height,
-                                f'{height:.1f}', ha='center', va='bottom', fontsize=10)
-                    else:
-                        ax.text(bar.get_x() + bar.get_width()/2., height,
-                                f'{height:.1f}', ha='center', va='bottom', fontsize=10)
-        else:  # barh
-            kwargs = dict(height=width, color=color, label=label)
-            if ax is None:
-                bars = plt.barh(x_data, y_data, **kwargs)
-            else:
-                bars = ax.barh(x_data, y_data, **kwargs)
-            
-            if show_labels:
-                for bar in bars:
-                    width_val = bar.get_width()
-                    if ax is None:
-                        plt.text(width_val, bar.get_y() + bar.get_height()/2.,
-                                f'{width_val:.1f}', ha='left', va='center', fontsize=10)
-                    else:
-                        ax.text(width_val, bar.get_y() + bar.get_height()/2.,
-                                f'{width_val:.1f}', ha='left', va='center', fontsize=10)
 
     def _draw_errorbars(self, x_data, y_data, err, ax) -> None:
         """Discrete error bars (errorbars/eb) or shaded band (errorshade/es)."""
@@ -1024,11 +952,6 @@ def _list_styles() -> None:
     print("\n  ── Seaborn distribution styles ──────────────────────────────")
     for s in sorted(SEABORN_STYLES):
         print(f"    {s}")
-    print("\n  ── Bar chart styles ─────────────────────────────────────────")
-    for s in sorted(BAR_STYLES):
-        print(f"    {s}")
-    print("    width <float>      → bar width (default: 0.8)")
-    print("    bar_labels <bool>  → show value labels on bars (default: false)")
     print()
 
 

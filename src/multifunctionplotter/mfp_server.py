@@ -112,6 +112,8 @@ def plot(
     cbar_label: str = "",
     levels: int = 10,
     bin: int = 0,
+    bar_width: float = 0.8,
+    bar_labels: bool = False,
 ) -> str:
     """
     Plot a single data series from a CSV, TXT, or DAT file.
@@ -125,6 +127,7 @@ def plot(
                     stars, d
       Error bars  : errorbars (eb) — needs yerr_col
                     errorshade (es) — needs yerr_col
+      Bar charts  : bar (vertical), barh (horizontal)
       Colormap    : scatter — needs cmap_col
       2-D matrix  : heatmap, contour, contourf  (no x_col/y_col needed)
       Distribution: hist, kde, box, violin
@@ -158,6 +161,8 @@ def plot(
         cbar_label:     Colorbar label text
         levels:         Number of contour levels for contour/contourf. Default: 10
         bin:            Number of histogram bins (0 = auto)
+        bar_width:      Width of bars for bar/barh charts. Default: 0.8
+        bar_labels:     Show value labels on bars. Default: False
 
     Returns:
         Success message with the output path, or error details.
@@ -169,6 +174,7 @@ def plot(
         plot("matrix.dat", 0, 0, style="heatmap", colormap="inferno", save="heat.png")
         plot("data.csv", 1, 2, style="scatter", cmap_col=3, colormap="plasma")
         plot("data.dat", 1, 2, style="lines", xrange=0:100, yrange=0:500)
+        plot("data.csv", 0, 1, style="bar", bar_labels=True, linecolor="steelblue")
     """
     # Build the gnuplot-style command string that mfp parses
     cmd_parts = [file, "using", f"{x_col}:{y_col}", "with", style]
@@ -192,6 +198,8 @@ def plot(
     if cbar_label:      cmd_parts += [f'cbar_label "{cbar_label}"']
     if levels != 10:    cmd_parts += ["levels", str(levels)]
     if bin:             cmd_parts += ["bin", str(bin)]
+    if bar_width != 0.8: cmd_parts += ["width", str(bar_width)]
+    if bar_labels:      cmd_parts += ["bar_labels", "true"]
 
     args = cmd_parts + ["--save", save]
     if xlog: args += ["--xlog"]
