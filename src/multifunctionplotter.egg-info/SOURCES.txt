@@ -1,0 +1,16 @@
+LICENSE
+README.md
+pyproject.toml
+src/multifunctionplotter/mfp.py
+src/multifunctionplotter/mfp_dmanp.py
+src/multifunctionplotter/mfp_dmanp_help.py
+src/multifunctionplotter/mfp_help.py
+src/multifunctionplotter/mfp_server.py
+src/multifunctionplotter/prophet_pred.py
+src/multifunctionplotter.egg-info/PKG-INFO
+src/multifunctionplotter.egg-info/SOURCES.txt
+src/multifunctionplotter.egg-info/dependency_links.txt
+src/multifunctionplotter.egg-info/entry_points.txt
+src/multifunctionplotter.egg-info/requires.txt
+src/multifunctionplotter.egg-info/top_level.txt
+tests/test_mfp.py

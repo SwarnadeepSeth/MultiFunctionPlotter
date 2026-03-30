@@ -408,90 +408,6 @@ class Plotter:
     def _load_csv(self) -> None:
         self.data = pd.read_csv(self.cfg.file)
 
-        # ── Auto-detect and parse date/datetime columns ───────────────────────
-        # Try an ordered list of common formats before falling back to pandas
-        # inference.  Using explicit formats avoids the deprecated
-        # infer_datetime_format flag and suppresses ambiguity warnings.
-        _DATE_FORMATS = [
-            "%Y-%m-%d",      # 2019-06-18  (ISO 8601 — most common)
-            "%m/%d/%y",      # 03/01/58    (US short year — see century fix below)
-            "%m/%d/%Y",      # 03/01/1958  (US long year)
-            "%d/%m/%Y",      # 18/06/2019  (European)
-            "%d-%m-%Y",      # 18-06-2019
-            "%d %b %Y",      # 18 Jun 2019
-            "%b %d %Y",      # Jun 18 2019
-            "%Y/%m/%d",      # 2019/06/18
-            "%d.%m.%Y",      # 18.06.2019
-        ]
-
-        def _fix_two_digit_year(series: pd.Series) -> pd.Series:
-            """Map 2-digit years: 00-29 → 2000s, 30-99 → 1900s (POSIX convention)."""
-            # pandas %y already uses this convention; this corrects cases where
-            # the inferred century is wrong (e.g. 58 → 2058 instead of 1958).
-            current_year = pd.Timestamp.now().year
-            cutoff = current_year - 2000 + 10  # keep a 10-year future window
-            def _fix(ts):
-                if pd.isnull(ts):
-                    return ts
-                if ts.year > current_year + 10:   # clearly wrong century
-                    return ts.replace(year=ts.year - 100)
-                return ts
-            return series.apply(_fix)
-
-        def _try_parse_dates(series: pd.Series) -> Optional[pd.Series]:
-            """Return a datetime Series if *series* looks like dates, else None."""
-            for fmt in _DATE_FORMATS:
-                try:
-                    parsed = pd.to_datetime(series, format=fmt)
-                    if "%y" in fmt:           # 2-digit year — check century
-                        parsed = _fix_two_digit_year(parsed)
-                    return parsed
-                except (ValueError, TypeError):
-                    continue
-            # Last resort: let pandas guess — but only if the column actually
-            # contains string-like tokens (not floats stored as strings).
-            sample = series.dropna().head(5)
-            looks_like_dates = sample.apply(
-                lambda v: isinstance(v, str) and not _is_numeric_str(v)
-            ).all()
-            if not looks_like_dates:
-                return None
-            try:
-                parsed = pd.to_datetime(series)
-                return parsed
-            except (ValueError, TypeError):
-                return None
-
-        def _is_numeric_str(s: str) -> bool:
-            """Return True if *s* represents a plain number (int or float)."""
-            try:
-                float(s)
-                return True
-            except ValueError:
-                return False
-
-        # Include pandas StringDtype columns as well as plain object columns
-        _str_like = (object, pd.StringDtype)
-        for col in self.data.columns:
-            if isinstance(self.data[col].dtype, _str_like) or self.data[col].dtype == object:
-                result = _try_parse_dates(self.data[col])
-                if result is not None:
-                    self.data[col] = result
-                    log.info("Column '%s' parsed as datetime.", col)
-
-        # ── Drop rows where every non-date column is NaN (e.g. "null" rows) ──
-        non_date_cols = [
-            c for c in self.data.columns
-            if not pd.api.types.is_datetime64_any_dtype(self.data[c])
-        ]
-        if non_date_cols:
-            before = len(self.data)
-            self.data.dropna(subset=non_date_cols, how="all", inplace=True)
-            self.data.reset_index(drop=True, inplace=True)
-            dropped = before - len(self.data)
-            if dropped:
-                log.info("Dropped %d all-null row(s) from CSV.", dropped)
-
     def _load_text(self) -> None:
         try:
             self.data = pd.read_csv(self.cfg.file, delimiter=r"\s+", header=None)
@@ -622,20 +538,6 @@ class Plotter:
                 log.info("X-axis date format: %s", self.cfg.date_format)
             except Exception as e:
                 log.error("Failed to apply date format: %s", e)
-        else:
-            # Auto-apply sensible date formatting when x column holds datetime values
-            try:
-                if self.data is not None and self.cfg.x_col is not None:
-                    x_col_data = self.data.iloc[:, self.cfg.x_col]
-                    if pd.api.types.is_datetime64_any_dtype(x_col_data):
-                        from matplotlib.dates import AutoDateFormatter
-                        locator = AutoDateLocator()
-                        ax.xaxis.set_major_locator(locator)
-                        ax.xaxis.set_major_formatter(AutoDateFormatter(locator))
-                        plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, ha="right")
-                        log.info("X-axis: auto date formatting applied.")
-            except Exception as e:
-                log.error("Auto date format failed: %s", e)
 
     # ── Core plot renderers ───────────────────────────────────────────────────
 

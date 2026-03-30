@@ -1,0 +1,10 @@
+matplotlib
+numpy
+pandas
+seaborn
+fastmcp
+
+[forecast]
+prophet
+scipy
+statsmodels

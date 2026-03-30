@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "multifunctionplotter"
-version = "1.0.3"
+version = "1.1.0"
 description = "Publication-quality plots from CSV/TXT/DAT files — CLI, Python API, and MCP agent tool"
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.8"
+requires-python = ">=3.10"
 
 authors = [
     { name = "Swarnadeep Seth" }

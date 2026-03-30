@@ -135,13 +135,13 @@ def plot(
         y_col:          Column index for y-axis
         style:          Plot style (see above). Default: lines
         title:          Plot title (will be quoted automatically)
-        xlabel:         X-axis label
+        xlabel:         X-axis label 
         ylabel:         Y-axis label
         legend:         Legend entry for this series (single word, no spaces)
         linecolor:      Any matplotlib color: 'tab:blue', 'red', '#3a7ab3', 'steelblue'
         linewidth:      Line width in points. Default: 2
-        xrange:         X-axis limits as 'min:max', e.g. '0:100'
-        yrange:         Y-axis limits as 'min:max'
+        xrange:         X-axis limits as min:max, e.g. 0:100 (no quotes needed)
+        yrange:         Y-axis limits as min:max (no quotes needed)
         save:           Output file path. Supports .png .pdf .svg .eps. Default: plot.png
         xlog:           Use log scale on x-axis
         ylog:           Use log scale on y-axis
@@ -165,9 +165,10 @@ def plot(
     Examples:
         plot("data.csv", 0, 4, style="lines", title="Close Price", save="price.png")
         plot("results.dat", 1, 2, style="errorbars", yerr_col=3, linecolor="tab:red")
-        plot("samples.csv", 0, 1, style="hist", bin=30, save="dist.pdf")
+        plot("samples.csv", 1, 0, style="hist", bin=30, save="dist.pdf") # x is data, y is ignored for hist
         plot("matrix.dat", 0, 0, style="heatmap", colormap="inferno", save="heat.png")
         plot("data.csv", 1, 2, style="scatter", cmap_col=3, colormap="plasma")
+        plot("data.dat", 1, 2, style="lines", xrange=0:100, yrange=0:500)
     """
     # Build the gnuplot-style command string that mfp parses
     cmd_parts = [file, "using", f"{x_col}:{y_col}", "with", style]
@@ -243,7 +244,7 @@ def plot_function(
         legend:     Legend entry (single word)
         linecolor:  Matplotlib color string
         linewidth:  Line width. Default: 2
-        yrange:     Y-axis limits as 'min:max'
+        yrange:     Y-axis limits as min:max (no quotes needed)
         ylog:       Use log scale on y-axis
 
     Returns:
@@ -299,7 +300,7 @@ def multi_plot(
         mfp uses the first token of each comma-separated part to detect splits.
 
         IMPORTANT: For subplots, axis labels must be specified per-command, not globally.
-        IMPORTANT: hist style requires both x and y columns — use 0 as y placeholder if needed.
+        IMPORTANT: hist style requires both x and y columns — use 0 as y placeholder.
 
         Args:
             commands:       One or more mfp commands, comma-separated.
@@ -345,8 +346,8 @@ def multi_plot(
 
         NOTES:
             - hist style requires both x and y columns — use 0 as y placeholder:
-            CORRECT:  'data.csv using 5:0 with hist bin 25' (always keep the second column to zero for hist)
-            WRONG:    'data.csv using 5 with hist bin 25'  ← will error
+            CORRECT:  'data.csv using 5:0 with hist bin 25' (always keep the second column to zero for hist as x is data, y is ignored)
+            WRONG:    'data.csv using 5 with hist bin 25'  ← will error need y placeholder
 
         Examples:
             # Two overlaid series with axis labels

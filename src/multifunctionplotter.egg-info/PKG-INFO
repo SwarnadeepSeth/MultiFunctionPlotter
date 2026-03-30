@@ -1,0 +1,954 @@
+Metadata-Version: 2.4
+Name: multifunctionplotter
+Version: 1.1.0
+Summary: Publication-quality plots from CSV/TXT/DAT files — CLI, Python API, and MCP agent tool
+Author: Swarnadeep Seth
+License:                                  Apache License
+                                   Version 2.0, January 2004
+                                http://www.apache.org/licenses/
+        
+           TERMS AND CONDITIONS FOR USE, REPRODUCTION, AND DISTRIBUTION
+        
+           1. Definitions.
+        
+              "License" shall mean the terms and conditions for use, reproduction,
+              and distribution as defined by Sections 1 through 9 of this document.
+        
+              "Licensor" shall mean the copyright owner or entity authorized by
+              the copyright owner that is granting the License.
+        
+              "Legal Entity" shall mean the union of the acting entity and all
+              other entities that control, are controlled by, or are under common
+              control with that entity. For the purposes of this definition,
+              "control" means (i) the power, direct or indirect, to cause the
+              direction or management of such entity, whether by contract or
+              otherwise, or (ii) ownership of fifty percent (50%) or more of the
+              outstanding shares, or (iii) beneficial ownership of such entity.
+        
+              "You" (or "Your") shall mean an individual or Legal Entity
+              exercising permissions granted by this License.
+        
+              "Source" form shall mean the preferred form for making modifications,
+              including but not limited to software source code, documentation
+              source, and configuration files.
+        
+              "Object" form shall mean any form resulting from mechanical
+              transformation or translation of a Source form, including but
+              not limited to compiled object code, generated documentation,
+              and conversions to other media types.
+        
+              "Work" shall mean the work of authorship, whether in Source or
+              Object form, made available under the License, as indicated by a
+              copyright notice that is included in or attached to the work
+              (an example is provided in the Appendix below).
+        
+              "Derivative Works" shall mean any work, whether in Source or Object
+              form, that is based on (or derived from) the Work and for which the
+              editorial revisions, annotations, elaborations, or other modifications
+              represent, as a whole, an original work of authorship. For the purposes
+              of this License, Derivative Works shall not include works that remain
+              separable from, or merely link (or bind by name) to the interfaces of,
+              the Work and Derivative Works thereof.
+        
+              "Contribution" shall mean any work of authorship, including
+              the original version of the Work and any modifications or additions
+              to that Work or Derivative Works thereof, that is intentionally
+              submitted to Licensor for inclusion in the Work by the copyright owner
+              or by an individual or Legal Entity authorized to submit on behalf of
+              the copyright owner. For the purposes of this definition, "submitted"
+              means any form of electronic, verbal, or written communication sent
+              to the Licensor or its representatives, including but not limited to
+              communication on electronic mailing lists, source code control systems,
+              and issue tracking systems that are managed by, or on behalf of, the
+              Licensor for the purpose of discussing and improving the Work, but
+              excluding communication that is conspicuously marked or otherwise
+              designated in writing by the copyright owner as "Not a Contribution."
+        
+              "Contributor" shall mean Licensor and any individual or Legal Entity
+              on behalf of whom a Contribution has been received by Licensor and
+              subsequently incorporated within the Work.
+        
+           2. Grant of Copyright License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              copyright license to reproduce, prepare Derivative Works of,
+              publicly display, publicly perform, sublicense, and distribute the
+              Work and such Derivative Works in Source or Object form.
+        
+           3. Grant of Patent License. Subject to the terms and conditions of
+              this License, each Contributor hereby grants to You a perpetual,
+              worldwide, non-exclusive, no-charge, royalty-free, irrevocable
+              (except as stated in this section) patent license to make, have made,
+              use, offer to sell, sell, import, and otherwise transfer the Work,
+              where such license applies only to those patent claims licensable
+              by such Contributor that are necessarily infringed by their
+              Contribution(s) alone or by combination of their Contribution(s)
+              with the Work to which such Contribution(s) was submitted. If You
+              institute patent litigation against any entity (including a
+              cross-claim or counterclaim in a lawsuit) alleging that the Work
+              or a Contribution incorporated within the Work constitutes direct
+              or contributory patent infringement, then any patent licenses
+              granted to You under this License for that Work shall terminate
+              as of the date such litigation is filed.
+        
+           4. Redistribution. You may reproduce and distribute copies of the
+              Work or Derivative Works thereof in any medium, with or without
+              modifications, and in Source or Object form, provided that You
+              meet the following conditions:
+        
+              (a) You must give any other recipients of the Work or
+                  Derivative Works a copy of this License; and
+        
+              (b) You must cause any modified files to carry prominent notices
+                  stating that You changed the files; and
+        
+              (c) You must retain, in the Source form of any Derivative Works
+                  that You distribute, all copyright, patent, trademark, and
+                  attribution notices from the Source form of the Work,
+                  excluding those notices that do not pertain to any part of
+                  the Derivative Works; and
+        
+              (d) If the Work includes a "NOTICE" text file as part of its
+                  distribution, then any Derivative Works that You distribute must
+                  include a readable copy of the attribution notices contained
+                  within such NOTICE file, excluding those notices that do not
+                  pertain to any part of the Derivative Works, in at least one
+                  of the following places: within a NOTICE text file distributed
+                  as part of the Derivative Works; within the Source form or
+                  documentation, if provided along with the Derivative Works; or,
+                  within a display generated by the Derivative Works, if and
+                  wherever such third-party notices normally appear. The contents
+                  of the NOTICE file are for informational purposes only and
+                  do not modify the License. You may add Your own attribution
+                  notices within Derivative Works that You distribute, alongside
+                  or as an addendum to the NOTICE text from the Work, provided
+                  that such additional attribution notices cannot be construed
+                  as modifying the License.
+        
+              You may add Your own copyright statement to Your modifications and
+              may provide additional or different license terms and conditions
+              for use, reproduction, or distribution of Your modifications, or
+              for any such Derivative Works as a whole, provided Your use,
+              reproduction, and distribution of the Work otherwise complies with
+              the conditions stated in this License.
+        
+           5. Submission of Contributions. Unless You explicitly state otherwise,
+              any Contribution intentionally submitted for inclusion in the Work
+              by You to the Licensor shall be under the terms and conditions of
+              this License, without any additional terms or conditions.
+              Notwithstanding the above, nothing herein shall supersede or modify
+              the terms of any separate license agreement you may have executed
+              with Licensor regarding such Contributions.
+        
+           6. Trademarks. This License does not grant permission to use the trade
+              names, trademarks, service marks, or product names of the Licensor,
+              except as required for reasonable and customary use in describing the
+              origin of the Work and reproducing the content of the NOTICE file.
+        
+           7. Disclaimer of Warranty. Unless required by applicable law or
+              agreed to in writing, Licensor provides the Work (and each
+              Contributor provides its Contributions) on an "AS IS" BASIS,
+              WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or
+              implied, including, without limitation, any warranties or conditions
+              of TITLE, NON-INFRINGEMENT, MERCHANTABILITY, or FITNESS FOR A
+              PARTICULAR PURPOSE. You are solely responsible for determining the
+              appropriateness of using or redistributing the Work and assume any
+              risks associated with Your exercise of permissions under this License.
+        
+           8. Limitation of Liability. In no event and under no legal theory,
+              whether in tort (including negligence), contract, or otherwise,
+              unless required by applicable law (such as deliberate and grossly
+              negligent acts) or agreed to in writing, shall any Contributor be
+              liable to You for damages, including any direct, indirect, special,
+              incidental, or consequential damages of any character arising as a
+              result of this License or out of the use or inability to use the
+              Work (including but not limited to damages for loss of goodwill,
+              work stoppage, computer failure or malfunction, or any and all
+              other commercial damages or losses), even if such Contributor
+              has been advised of the possibility of such damages.
+        
+           9. Accepting Warranty or Additional Liability. While redistributing
+              the Work or Derivative Works thereof, You may choose to offer,
+              and charge a fee for, acceptance of support, warranty, indemnity,
+              or other liability obligations and/or rights consistent with this
+              License. However, in accepting such obligations, You may act only
+              on Your own behalf and on Your sole responsibility, not on behalf
+              of any other Contributor, and only if You agree to indemnify,
+              defend, and hold each Contributor harmless for any liability
+              incurred by, or claims asserted against, such Contributor by reason
+              of your accepting any such warranty or additional liability.
+        
+           END OF TERMS AND CONDITIONS
+        
+           APPENDIX: How to apply the Apache License to your work.
+        
+              To apply the Apache License to your work, attach the following
+              boilerplate notice, with the fields enclosed by brackets "[]"
+              replaced with your own identifying information. (Don't include
+              the brackets!)  The text should be enclosed in the appropriate
+              comment syntax for the file format. We also recommend that a
+              file or class name and description of purpose be included on the
+              same "printed page" as the copyright notice for easier
+              identification within third-party archives.
+        
+           Copyright [yyyy] [name of copyright owner]
+        
+           Licensed under the Apache License, Version 2.0 (the "License");
+           you may not use this file except in compliance with the License.
+           You may obtain a copy of the License at
+        
+               http://www.apache.org/licenses/LICENSE-2.0
+        
+           Unless required by applicable law or agreed to in writing, software
+           distributed under the License is distributed on an "AS IS" BASIS,
+           WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+           See the License for the specific language governing permissions and
+           limitations under the License.
+        
+Project-URL: Homepage, https://github.com/SwarnadeepSeth/MultiFunctionPlotter
+Project-URL: Repository, https://github.com/SwarnadeepSeth/MultiFunctionPlotter
+Keywords: plotting,visualization,matplotlib,cli,mcp,ai-agent
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Environment :: Console
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: matplotlib
+Requires-Dist: numpy
+Requires-Dist: pandas
+Requires-Dist: seaborn
+Requires-Dist: fastmcp
+Provides-Extra: forecast
+Requires-Dist: prophet; extra == "forecast"
+Requires-Dist: scipy; extra == "forecast"
+Requires-Dist: statsmodels; extra == "forecast"
+Dynamic: license-file
+
+# MultiFunctionPlotter (MFP)
+
+A versatile Python-based tool for creating publication-quality plots from CSV, TXT, or DAT files. MFP combines the simplicity of gnuplot-style commands with the power of Python's matplotlib and seaborn libraries.
+
+## Version: 1.2.0
+
+---
+
+## Table of Contents
+
+- [MultiFunctionPlotter (MFP)](#multifunctionplotter-mfp)
+  - [Version: 1.2.0](#version-120)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Installation](#installation)
+    - [Option 1: Install Dependencies](#option-1-install-dependencies)
+    - [Option 2: Install as Command-Line Tool (Recommended)](#option-2-install-as-command-line-tool-recommended)
+    - [MCP Server Installation](#mcp-server-installation)
+    - [Usage with AI Assistants](#usage-with-ai-assistants)
+  - [Quick Start](#quick-start)
+    - [Command Line](#command-line)
+    - [Python API](#python-api)
+  - [Basic Usage](#basic-usage)
+    - [Command Syntax](#command-syntax)
+    - [Common Tokens](#common-tokens)
+    - [Full Example](#full-example)
+  - [Plot Styles](#plot-styles)
+    - [Line \& Marker Styles](#line--marker-styles)
+    - [Error Bars](#error-bars)
+    - [Scatter with Colormap](#scatter-with-colormap)
+    - [Distribution Plots](#distribution-plots)
+    - [2D Plots](#2d-plots)
+  - [Advanced Axis Formatting (v1.2)](#advanced-axis-formatting-v12)
+    - [Scientific Notation](#scientific-notation)
+    - [Custom Tick Positions](#custom-tick-positions)
+    - [Tick Rotation](#tick-rotation)
+    - [Date Formatting](#date-formatting)
+    - [Combined Example](#combined-example)
+  - [Mathematical Functions](#mathematical-functions)
+  - [Subplots](#subplots)
+  - [Log Scale](#log-scale)
+  - [Saving Figures](#saving-figures)
+    - [Custom Figure Size](#custom-figure-size)
+  - [JSON Configuration](#json-configuration)
+  - [Time Series Forecasting](#time-series-forecasting)
+  - [Data Manipulator](#data-manipulator)
+    - [Launch](#launch)
+    - [Supported File Formats](#supported-file-formats)
+    - [Available Actions](#available-actions)
+      - [Inspection Commands](#inspection-commands)
+      - [Transformation Commands](#transformation-commands)
+      - [Data Cleaning](#data-cleaning)
+      - [I/O Commands](#io-commands)
+      - [History Commands](#history-commands)
+    - [Examples](#examples)
+    - [Tips](#tips)
+  - [Examples](#examples-1)
+    - [Stock Price Analysis](#stock-price-analysis)
+    - [Error Analysis](#error-analysis)
+    - [Scientific Data](#scientific-data)
+    - [Publication Quality](#publication-quality)
+  - [Help System](#help-system)
+    - [Command Line Help](#command-line-help)
+    - [List All Styles](#list-all-styles)
+  - [Contributing](#contributing)
+  - [License](#license)
+  - [Author](#author)
+
+---
+
+## Features
+
+- **Multiple File Formats**: Load data from CSV, TXT, or DAT files
+- **Rich Plot Styles**: Line plots, points, dashed lines, error bars, scatter, histograms, KDE, box plots, violin plots
+- **2D Visualizations**: Heatmaps, contour plots, filled contours
+- **Colormap Scatter**: Color points by a third variable
+- **Custom Functions**: Plot mathematical expressions directly
+- **Advanced Axis Formatting**: Scientific notation, custom ticks, rotations, date formatting
+- **Subplot Layouts**: Organize multiple plots in grid layouts
+- **Log Scale**: Logarithmic axes for spectrum analysis
+- **JSON Config**: Save and replay plot configurations
+- **CLI & API**: Use from command line or Python code
+
+---
+
+## Installation
+
+### Option 1: Install Dependencies
+
+Install the required Python packages:
+
+```
+pip install -r requirements.txt
+```
+
+**Required packages:**
+- matplotlib
+- numpy
+- pandas
+- seaborn
+
+### Option 2: Install as Command-Line Tool (Recommended)
+
+Install directly from PyPI:
+
+```
+pip3 install multifunctionplotter
+```
+
+After installation, you can run `mfp` from anywhere:
+
+```
+mfp data.csv using 1:2 with lines
+mfp --help
+mfp forecast
+```
+
+### MCP Server Installation
+
+For AI assistant integration (Claude Code, opencode, etc.):
+
+```
+pip3 install multifunctionplotter
+mfp-mcp
+```
+
+### Usage with AI Assistants
+
+**Claude Code:**
+```
+claude mcp add mfp -- mfp-mcp
+```
+
+**opencode:** Add to `~/.config/opencode/opencode.json`:
+
+1. Find the mfp-mcp path:
+   ```bash
+   which mfp-mcp
+   ```
+
+2. Open the config file:
+   ```bash
+   nano ~/.config/opencode/opencode.json
+   ```
+
+3. Add the mfp configuration:
+   ```json
+   {
+     "$schema": "https://opencode.ai/config.json",
+     "mcp": {
+       "mfp": {
+         "type": "local",
+         "command": ["<path-to-mfp-mcp>"]
+       }
+     }
+   }
+   ```
+
+Replace `<path-to-mfp-mcp>` with the path from step 1.
+
+---
+
+## Important Notes
+
+### CLI vs Python Tool
+
+The MFP CLI command and Python `mfp_multi_plot` tool work slightly differently:
+- CLI parses labels but may not save them to `plot.json` for replay
+- Python tool (`mfp_multi_plot`) handles subplot configurations more reliably
+- For complex plots, prefer the Python tool or the `mfp_plot_function` tool
+
+---
+
+## Quick Start
+
+### Command Line
+
+```
+# Basic line plot
+mfp data.csv using 1:2 with lines
+
+# With title and labels
+mfp data.csv using 1:2 with lines title "My Plot" xlabel "X" ylabel "Y"
+
+# Save to file
+mfp data.csv using 1:2 with lines --save plot.png
+```
+
+### Python API
+
+```python
+import sys
+sys.path.insert(0, 'src')
+from mfp import PlotConfig, Plotter
+
+# Create plot configuration
+cfg = PlotConfig(
+    file="data.csv",
+    x_col=1, y_col=2,
+    style="lines",
+    title="My Plot",
+    xlabel="X Axis",
+    ylabel="Y Axis"
+)
+
+# Generate plot
+Plotter(cfg).plot()
+```
+
+---
+
+## Basic Usage
+
+### Command Syntax
+
+```
+mfp <file> using <x_col>:<y_col> with <style> [options]
+```
+
+### Common Tokens
+
+| Token | Description | Example |
+|-------|-------------|---------|
+| `using` / `u` | Column indices (1-based for text, 0-based for CSV) | `using 1:2` |
+| `with` / `w` | Plot style | `with lines` |
+| `title` | Plot title | `title "My Title"` |
+| `xlabel` | X-axis label | `xlabel "Time"` |
+| `ylabel` | Y-axis label | `xlabel "Price"` |
+| `legend` / `lg` | Legend entry | `legend "Series 1"` |
+| `linewidth` / `lw` | Line width (default: 2) | `linewidth 3` |
+| `linecolor` / `lc` | Line/marker color | `linecolor tab:red` |
+| `xrange` | X-axis limits | `xrange 0:100` |
+| `yrange` | Y-axis limits | `yrange 0:1000` |
+
+### Full Example
+
+```
+mfp data.csv using 1:2 with lines title "Stock Prices" xlabel "Date" ylabel "Close Price" linecolor tab:blue linewidth 2 --save plot.png
+```
+
+---
+
+## Plot Styles
+
+### Line & Marker Styles
+
+| Style | Alias | Description |
+|-------|-------|-------------|
+| `lines` | `l` | Solid line |
+| `dashed` | | Dashed line |
+| `dotted` | | Dotted line |
+| `points` | `p` | Circle markers only |
+| `linespoints` | `lp` | Line + markers |
+| `stars` | `*` | Star markers |
+| `d` | | Diamond markers |
+
+**Example:**
+```
+mfp data.csv using 1:2 with points linecolor tab:red
+mfp data.csv using 1:2 with dashed linecolor tab:green
+```
+
+### Error Bars
+
+Two styles available:
+
+**Discrete Error Bars** (`errorbars` / `eb`):
+```
+mfp data.dat using 1:2 with errorbars yerr 3
+```
+
+**Shaded Error Band** (`errorshade` / `es`):
+```
+mfp data.dat using 1:2 with errorshade yerr 3
+```
+
+**Extra tokens:**
+- `yerr <col>` - Column with ±σ values
+- `capsize <int>` - Cap width (default: 4)
+
+**Combine with lines:**
+```
+mfp data.csv using 1:2 with errorshade yerr 3 lc steelblue, data.csv using 1:2 with lines lc steelblue
+```
+
+### Scatter with Colormap
+
+Plot x vs y colored by a third variable:
+
+```
+mfp data.csv using 1:2 with scatter cmap 3 colormap plasma
+```
+
+**Tokens:**
+- `cmap <col>` - Column for color values (required)
+- `colormap <name>` - Matplotlib colormap (default: viridis)
+- `cbar_label` - Colorbar label
+
+**Useful Colormaps:**
+- Perceptually uniform: `viridis`, `plasma`, `inferno`, `magma`, `cividis`
+- Diverging: `coolwarm`, `RdBu`, `seismic`
+- Sequential: `Blues`, `Reds`, `YlOrRd`
+
+### Distribution Plots
+
+| Style | Description |
+|-------|-------------|
+| `hist` | Histogram (use `bin <n>` for number of bins) |
+| `kde` | Kernel Density Estimation |
+| `box` | Box-and-whisker plot |
+| `violin` | Violin plot |
+
+**Examples:**
+```
+mfp data.csv using 0:1 with hist bin 30
+mfp data.csv using 0:1 with kde
+mfp data.csv using 0:1 with box
+mfp data.csv using 0:1 with violin
+```
+
+### 2D Plots
+
+For matrix/grid data (no column specification needed):
+
+| Style | Description |
+|-------|-------------|
+| `heatmap` | 2D heatmap (imshow) |
+| `contour` | Contour lines |
+| `contourf` | Filled contours |
+
+**Examples:**
+```
+mfp matrix.dat with heatmap colormap viridis
+mfp matrix.dat with contourf levels 20 colormap RdBu
+mfp matrix.dat with contour levels 15
+```
+
+**Tokens:**
+- `colormap <name>` - Colormap (default: viridis)
+- `levels <n>` - Number of contour levels (default: 10)
+- `cbar_label` - Colorbar label
+
+---
+
+## Advanced Axis Formatting (v1.2)
+
+Control axis appearance with precision for publication-quality plots.
+
+### Scientific Notation
+
+```
+mfp data.csv using 1:2 with lines sci_notation x
+mfp data.csv using 1:2 with lines sci_notation y
+mfp data.csv using 1:2 with lines sci_notation both
+```
+
+### Custom Tick Positions
+
+```
+mfp data.csv using 1:2 with lines xticks "0,90,180,270"
+mfp data.csv using 1:2 with lines yticks "0,1e-5,2e-5"
+```
+
+### Tick Rotation
+
+```
+mfp data.csv using 1:2 with lines xtick_rotation 45
+mfp data.csv using 1:2 with lines ytick_rotation 90
+```
+
+### Date Formatting
+
+```
+mfp data.csv using 1:2 with lines date_format "%Y-%m-%d"
+```
+
+Format codes: `%Y` (year), `%m` (month), `%d` (day), `%H` (hour), `%M` (min), `%S` (sec)
+
+### Combined Example
+
+```
+mfp data.csv using 1:2 with lines sci_notation both xticks "0,300,600" xtick_rotation 30
+```
+
+---
+
+## Mathematical Functions
+
+Plot mathematical expressions directly:
+
+```
+mfp func: "f(x) = np.sin(x)" xrange 0:10
+```
+
+**With parameters:**
+```
+mfp func: "f(x,a=2) = a*np.cos(x)" xrange 0:10
+```
+
+**Tokens:**
+- `func:` - Start function definition
+- `xrange` - Required x-axis range
+- Use `np.` prefix for numpy functions
+
+**Examples:**
+```
+mfp func: "f(x) = np.sin(x)" xrange 0:10 lc red
+mfp func: "f(x) = x**2" xrange 0:5 lc blue lw 2
+mfp func: "f(x,a=1,b=2) = a*np.exp(-b*x)" xrange 0:5
+```
+
+---
+
+## Subplots
+
+Create multi-panel figures using `--subplot`:
+
+```
+mfp --subplot AB data.csv using 1:2 with lines, data.csv using 1:2 with hist
+```
+
+**Layout format:**
+- Letters represent panels (A, B, C, ...)
+- Use `-` to separate rows
+- Each command separated by comma
+
+**2x2 Grid:**
+```
+mfp --subplot AB-CD "plot1, plot2, plot3, plot4"
+```
+
+**Asymmetric Layout:**
+```
+mfp --subplot AA-BC "top_full, bottom_left, bottom_right"
+```
+
+**Important: Subplot Labels**
+
+When using subplots, axis labels must be specified **per-command**, not globally:
+
+```
+# CORRECT - labels per subplot
+mfp "cmd1 xlabel 'X' ylabel 'Y', cmd2 xlabel 'A' ylabel 'B'"
+
+# Labels may not apply correctly to individual subplots when set globally
+```
+
+**Histogram Requirement:**
+
+The `hist` style requires both x and y columns (even if y is just a placeholder):
+
+```
+# CORRECT
+mfp data.csv using 5:0 with hist bin 25
+
+# WILL ERROR - missing y column
+mfp data.csv using 5 with hist bin 25
+```
+
+---
+
+## Log Scale
+
+Apply logarithmic scale to axes:
+
+```
+mfp spectrum.csv using 1:2 with lines --ylog
+mfp spectrum.csv using 1:2 with lines --xlog --ylog
+```
+
+**Tokens:**
+- `--xlog` - Logarithmic x-axis
+- `--ylog` - Logarithmic y-axis
+
+---
+
+## Saving Figures
+
+Save plots to file:
+
+```
+mfp data.csv using 1:2 with lines --save plot.png
+mfp data.csv using 1:2 with lines --save plot.pdf
+mfp data.csv using 1:2 with lines --save plot.svg
+```
+
+**Supported formats:**
+- `.png` - Raster (good for web)
+- `.pdf` - Vector (best for publications)
+- `.svg` - Vector (good for editing)
+- `.eps` - Vector (legacy journals)
+
+### Custom Figure Size
+
+Set custom figure dimensions:
+
+```
+mfp data.csv using 1:2 with lines --figsize 10:5
+```
+
+This sets figure to 10×5 inches. Default is 12×6.
+
+---
+
+## JSON Configuration
+
+MFP saves your last plot configuration to `plot.json`:
+
+```
+mfp data.csv using 1:2 with lines --save plot.png
+# plot.json is automatically saved
+mfp plot.json  # Replay last plot
+```
+
+**Manual JSON creation:**
+```json
+{
+    "file": "data.csv",
+    "x_col": 1,
+    "y_col": 2,
+    "style": "lines",
+    "title": "My Plot",
+    "linecolor": "tab:blue",
+    "linewidth": 2
+}
+```
+
+Then run:
+```
+mfp plot.json
+```
+
+---
+
+## Time Series Forecasting
+
+Forecast future values using Facebook Prophet:
+
+```
+mfp forecast
+```
+
+This launches an interactive forecasting tool.
+
+**Data format for forecasting:**
+```
+Date,Value
+2019-01-01,100
+2019-01-02,105
+...
+```
+
+---
+
+## Data Manipulator
+
+MFP includes a powerful interactive data manipulation tool for exploring, cleaning, and transforming tabular data without writing code.
+
+### Launch
+
+```
+mfp DM
+```
+
+Or directly:
+```
+python src/mfp_dmanp.py data.csv
+```
+
+### Supported File Formats
+
+- CSV files (.csv)
+- Excel files (.xlsx, .xls)
+- JSON files (.json)
+
+### Available Actions
+
+#### Inspection Commands
+
+| Command | Description |
+|---------|-------------|
+| `show` | Print the current DataFrame |
+| `head [N]` | Print first N rows (default: 10) |
+| `tail [N]` | Print last N rows (default: 10) |
+| `properties` / `props` | Column dtypes, NaN counts, summary statistics |
+| `counts <col>` | Frequency count of unique values |
+
+#### Transformation Commands
+
+| Command | Description |
+|---------|-------------|
+| `filter <expr>` | Keep rows matching a pandas query expression |
+| `slice <start:end>` | Keep rows in range [start, end) |
+| `sort <col> asc/desc` | Sort by a column |
+| `rename <old:new,...>` | Rename columns |
+| `cast <col> <type>` | Change column dtype (int/float/str/datetime) |
+| `addcol <name> <expr>` | Add new column from expression |
+| `modify <col> <old> <new>` | Replace values in a column |
+| `delete <col>` | Drop columns or rows |
+
+#### Data Cleaning
+
+| Command | Description |
+|---------|-------------|
+| `dedup [col1,col2]` | Remove duplicate rows |
+| `fillna <col> <value>` | Fill NaN cells with value |
+| `dropna <col>` | Drop rows with NaN |
+
+#### I/O Commands
+
+| Command | Description |
+|---------|-------------|
+| `load <file>` | Load a new file |
+| `generate <expr>` | Generate data from expression |
+| `gen` | Alias for generate |
+| `append <file>` | Append rows from another file |
+| `merge <file> <on_col>` | Merge with another file |
+| `save <file>` | Save to file |
+
+#### History Commands
+
+| Command | Description |
+|---------|-------------|
+| `undo` | Revert last operation |
+| `redo` | Re-apply undone operation |
+
+### Examples
+
+```
+Action> load data.csv
+Action> head
+Action> properties
+Action> filter price > 100
+Action> sort volume desc
+Action> rename old_name:new_name
+Action> addcol profit revenue - cost
+Action> dedup
+Action> save cleaned_data.csv
+```
+
+### Tips
+
+- Use `help` to see all commands
+- Use `undo` / `redo` to navigate changes
+- Expressions support pandas query syntax
+- Use `addcol` with `df.eval()` expressions
+
+---
+
+## Examples
+
+### Stock Price Analysis
+```
+# Close price over time
+mfp data.csv using 0:4 with lines title "Close Price" xlabel "Date" ylabel "Price"
+
+# Multiple prices
+mfp "data.csv using 0:2 with lines lc green, data.csv using 0:4 with lines lc blue"
+```
+
+### Error Analysis
+```
+mfp data.dat using 1:2 with errorbars yerr 3 lc red
+mfp data.dat using 1:2 with errorshade yerr 3 lc orange
+```
+
+### Scientific Data
+```
+# Log scale for spectrum
+mfp spectrum.csv using 1:2 with lines --ylog
+
+# Scientific notation
+mfp data.csv using 1:2 with lines sci_notation both
+```
+
+### Publication Quality
+```
+mfp data.csv using 1:2 with lines title "Results" xlabel "Time (s)" ylabel "Voltage (mV)" linewidth 3 sci_notation y xtick_rotation 45 --save figure.pdf
+```
+
+---
+
+## Help System
+
+### Command Line Help
+```
+mfp --help
+mfp --help tokens
+mfp --help styles
+mfp --help errorbars
+mfp --help colormap
+mfp --help 2d
+mfp --help logscale
+mfp --help subplots
+mfp --help save
+mfp --help formatting
+mfp --help examples
+```
+
+### List All Styles
+```
+mfp --list-styles
+```
+
+---
+
+## Contributing
+
+Contributions are welcome! Please feel free to:
+- Open an issue for bug reports or feature requests
+- Submit a pull request for improvements
+- Share your use cases and examples
+
+---
+
+## License
+
+MIT License
+
+---
+
+## Author
+
+**Dr. Swarnadeep Seth**  
+MultiFunctionPlotter (MFP) - A versatile data visualization tool

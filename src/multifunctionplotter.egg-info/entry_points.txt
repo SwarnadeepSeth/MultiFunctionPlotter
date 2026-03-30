@@ -1,0 +1,3 @@
+[console_scripts]
+mfp = multifunctionplotter.mfp:main
+mfp-mcp = multifunctionplotter.mfp_server:main
